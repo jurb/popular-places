@@ -43,7 +43,7 @@
       </div>
       <div class="column ">
         <l-map class="map" :zoom="map.zoom" :center="map.center">
-          <l-control position="topright">
+          <l-control position="bottomright">
             <button class="button" @click="scrollToTop">^</button>
           </l-control>
 
