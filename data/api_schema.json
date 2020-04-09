@@ -1,0 +1,20 @@
+ADDRESS_RESEARCH_DATA = {
+    "title": "address-research-data"
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "cat": {
+            "type": "string"
+        },
+        "lon": {
+            "type": "number"
+        },
+        "lat": {
+            "type": "number"
+        },
+        "id": {
+            "type": "number"
+        },
+    }
+}
