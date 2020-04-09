@@ -2,21 +2,22 @@
   <div class="home">
     <div class="columns">
       <div class="column is-narrow selection-pane">
-        <h2>Drukke plekken</h2>
-        <b-table :data="filteredData.slice(0, 9)">
-          <template slot-scope="props">
-            <b-table-column field="name" label="Naam">
-              {{ props.row.name }}
-            </b-table-column>
-            <b-table-column
-              field="current_popularity"
-              label="Populariteit"
-              sortable
-            >
-              {{ props.row.current_popularity }}
-            </b-table-column>
-          </template>
-        </b-table>
+        <drukte-tabel
+          title="Top 10 drukke plekken ⚠️"
+          :data="filteredData.slice(0, 10)"
+        />
+        <drukte-tabel
+          title="Top 5 drukke parken 🌳"
+          :data="
+            filteredData.filter((el) => el.types.includes('park')).slice(0, 5)
+          "
+        />
+        <drukte-tabel
+          title="Top 5 drukke winkels 🛒"
+          :data="
+            filteredData.filter((el) => el.types.includes('store')).slice(0, 5)
+          "
+        />
         <div class="field">
           <h2>Categorieën ({{ filteredData.length }} items)</h2>
           <p class="selectors">
@@ -25,10 +26,9 @@
           </p>
           <div v-for="type in typeUniques" v-bind:key="type.id">
             <b-checkbox v-model="selectedTypes" :native-value="type"
-              >{{ type }}
-              <!-- ({{
-                  filteredData.filter((el) => el.types.includes(type)).length
-                }}) -->
+              >{{ type }} ({{
+                filteredData.filter((el) => el.types.includes(type)).length
+              }})
             </b-checkbox>
             <!-- <li
               v-for="item in filteredData.filter((el) =>
@@ -42,7 +42,11 @@
         </div>
       </div>
       <div class="column ">
-        <l-map style="height: 644px" :zoom="map.zoom" :center="map.center">
+        <l-map class="map" :zoom="map.zoom" :center="map.center">
+          <l-control position="topright">
+            <button class="button" @click="scrollToTop">^</button>
+          </l-control>
+
           <l-tile-layer
             :url="map.url"
             :attribution="map.attribution"
@@ -74,9 +78,11 @@ import {
   LPopup,
   LControlZoom,
   LTooltip,
+  LControl,
 } from "vue2-leaflet";
 import "leaflet/dist/leaflet.css";
 import data from "../assets/data/example.json";
+import drukteTabel from "@/components/drukteTabel.vue";
 import * as d3 from "d3";
 
 export default {
@@ -99,6 +105,7 @@ export default {
     };
   },
   components: {
+    drukteTabel,
     LMap,
     LTileLayer,
     LMarker,
@@ -107,9 +114,14 @@ export default {
     LPopup,
     LControlZoom,
     LTooltip,
+    LControl,
   },
   watch: {},
-  methods: {},
+  methods: {
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    },
+  },
   created: function() {
     this.selectedTypes = this.typeUniques;
     // this.selectedTypes = ["supermarket"];
@@ -120,7 +132,7 @@ export default {
       const filterUnwantedTypes = (el) => !unwantedTypes.includes(el);
       const getUniques = (arr) => [...new Set(arr)];
       const types = (arr) => arr.flatMap((el) => el.types);
-      return getUniques(types(this.data));
+      return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
     filteredData() {
       return this.data.filter((el) =>
@@ -154,5 +166,14 @@ h2 {
 ul,
 .block {
   margin-left: 0.8em !important ;
+}
+
+.map {
+  height: 600px !important;
+}
+@media (min-width: 768px) {
+  .map {
+    height: 995px !important;
+  }
 }
 </style>
