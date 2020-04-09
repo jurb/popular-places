@@ -1,190 +1,116 @@
 <template>
   <div class="home">
-    <div class="columns is-gapless">
+    <div class="columns">
       <div class="column is-narrow selection-pane">
-        <AutoComplete
-          @selectedAddressCoordinates="updateSelectedAddressCoordinates"
-          @selectedAddress="updateSelectedAddress"
-          @selectedBAGResult="updateSelectedBAGResult"
-          @selectedBAGResultPand="updateSelectedBAGResultPand"
-          @selectedBAGID="updateSelectedBAGID"
-        />
-        <BagEigenschappen
-          v-if="bagIsWoning"
-          :title=" 'Eigenschappen woning' "
-          :selectedBAGResult="selectedBAGResult"
-          :selectedBAGResultPand="selectedBAGResultPand"
-        />
-        <RadioPane
-          @selected="updateSelectedRadio"
-          :categories="sortedCats"
-          :title=" 'Meldingen' "
-        />
-        <FilterPane
-          @selected="updateSelectedFilters"
-          :categories="sortedCats"
-          :title=" 'Voorzieningen' "
-        />
+        <div class="field">
+          <h2>Categorieën ({{ filteredData.length }} totaal)</h2>
+          <ul>
+            <li v-for="type in typeUniques" v-bind:key="type.id">
+              <b-checkbox v-model="selectedCategories" :native-value="type"
+                >{{ type }} ({{
+                  filteredData.filter((el) => el.types.includes(type)).length
+                }})
+              </b-checkbox>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="column ">
-        <LeafletMap
-          :draw-heatmap="drawHeatmap"
-          :filtered-data="filteredData"
-          :selected-address-coordinates="selectedAddressCoordinates"
-          :selected-address="selectedAddress"
-          :radius="radius"
-          :heatmap-data="filteredHeatmapData"
-        />
+        <l-map style="height: 644px" :zoom="map.zoom" :center="map.center">
+          <l-tile-layer
+            :url="map.url"
+            :attribution="map.attribution"
+          ></l-tile-layer>
+          <l-circle
+            v-for="point in filteredData"
+            v-bind:key="point.id"
+            :lat-lng="[point.coordinates.lat, point.coordinates.lng]"
+            :radius="popularity2radius(point.current_popularity)"
+            color="#f03"
+            :opacity="0.5"
+          />
+        </l-map>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import AutoComplete from "@/components/AutoComplete.vue";
-import FilterPane from "@/components/FilterPane.vue";
-import RadioPane from "@/components/RadioPane.vue";
-import BagEigenschappen from "@/components/BagEigenschappen.vue";
-import LeafletMap from "@/components/LeafletMap.vue";
-// import MapboxMap from "@/components/MapboxMap.vue";
-import functionData from "../assets/data/functies.json";
-import functionCategories from "../assets/data/functies-categories.json";
-// prepare a singular locationData object in case we want to merge more sources later
-const locationData = functionData;
-const locationCategories = functionCategories;
-const haversine = require("haversine");
-import p2000Amsterdam from "../assets/data/p2000Amsterdam.json";
+import L from "leaflet";
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LCircleMarker,
+  LCircle,
+  LPopup,
+  LControlZoom,
+} from "vue2-leaflet";
+import "leaflet/dist/leaflet.css";
+import data from "../assets/data/example.json";
+import * as d3 from "d3";
 
 export default {
   name: "home",
   data() {
     return {
-      heatmapData: p2000Amsterdam,
-      locationCategories: locationCategories,
-      functionData: locationData,
+      data: data,
       selectedCategories: [],
-      selectedRadio: "Uit",
-      selectedAddressCoordinates: [4.8952, 52.3702],
-      selectedAddress: "Oudezijds Achterburgwal 194-1",
-      selectedBAGID: "03630000759242",
-      radius: 0.5,
-      drawHeatmap: false,
-      selectedBAGResult: {},
-      selectedBAGResultPand: {},
-      bagIsWoning: false
+      map: {
+        refillData: [],
+        zoom: 11,
+        center: L.latLng(52.3702, 4.8952),
+        url:
+          "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
+        attribution: "CC-BY-4.0 Gemeente Amsterdam",
+      },
     };
   },
   components: {
-    AutoComplete,
-    LeafletMap,
-    FilterPane,
-    RadioPane,
-    BagEigenschappen
+    LMap,
+    LTileLayer,
+    LMarker,
+    LCircleMarker,
+    LCircle,
+    LPopup,
+    LControlZoom,
   },
-  watch: {
-    selectedRadio: function() {
-      if (this.selectedRadio === "Uit") {
-        this.drawHeatmap = false;
-      } else {
-        this.drawHeatmap = true;
-      }
-    },
-    selectedBAGResult: function() {
-      if (Object.keys(this.selectedBAGResult).length > 0) {
-        if (
-          this.selectedBAGResult["status"] === "Verblijfsobject in gebruik" ||
-          this.selectedBAGResult["status"] === "Plaats aangewezen"
-        ) {
-          this.bagIsWoning = true;
-        } else {
-          this.bagIsWoning = false;
-        }
-      }
-    }
-  },
-  methods: {
-    // Small methods to update the data with component events
-    // Maybe there's a more efficient way, but inline data setting seems ugly
-    updateSelectedFilters: function(value) {
-      this.selectedCategories = value;
-    },
-    updateSelectedRadio: function(value) {
-      this.selectedRadio = value;
-    },
-    updateSelectedAddressCoordinates: function(value) {
-      this.selectedAddressCoordinates = value;
-    },
-    updateSelectedAddress: function(value) {
-      this.selectedAddress = value;
-    },
-    updateSelectedBAGResult: function(value) {
-      this.selectedBAGResult = value;
-    },
-    updateSelectedBAGResultPand: function(value) {
-      this.selectedBAGResultPand = value;
-    },
-    updateSelectedBAGID: function(value) {
-      this.selectedBAGID = value;
-    }
+  watch: {},
+  methods: {},
+  created: function() {
+    // this.selectedCategories = this.typeUniques;
+    this.selectedCategories = ["point_of_interest"];
   },
   computed: {
-    // Sort categories alphabetically
-    sortedCats: function() {
-      function compare(a, b) {
-        if (a.category < b.category) return -1;
-        if (a.category > b.category) return 1;
-        return 0;
-      }
-      const categorySorted = this.locationCategories;
-      return categorySorted.sort(compare);
+    typeUniques() {
+      const getUniques = (arr) => [...new Set(arr)];
+      const types = (arr) => arr.flatMap((el) => el.types);
+      return getUniques(types(this.data));
     },
-    filteredData: function() {
-      // map selected values (categories) to array
-      let selectedValues = this.selectedCategories.map(el => el.category);
-      // filter data with selected categories, create array with possibly multiple arrays of objects
-      let filteredDataArrays = selectedValues.map(el =>
-        locationData.filter(element => element.cat === el)
+    filteredData() {
+      return (
+        this.data
+          // .filter((el) => el.current_popularity > 50)
+          .filter((el) =>
+            this.selectedCategories.some((selectedCat) =>
+              el.types.includes(selectedCat)
+            )
+          )
       );
-      // make sure filtered data is empty if no values are selected
-      let filteredData = [];
-      if (filteredDataArrays.length > 0) {
-        // reduce into single array of objects
-        filteredData = filteredDataArrays.reduce((result, current) => {
-          return result.concat(current);
-        });
-        // add camelcase and distance to each object
-        filteredData.forEach(el => {
-          const start = {
-            latitude: this.selectedAddressCoordinates[1],
-            longitude: this.selectedAddressCoordinates[0]
-          };
-          const end = {
-            latitude: el.lat,
-            longitude: el.lon
-          };
-          // haversine formula calculates distance, add to objects
-          el.distanceToSelectedAddress = haversine(start, end);
-          // lookup camelcased category value in category object and put in filteredData
-          el.camel = this.sortedCats.find(e => e.category === el.cat).camelName;
-        });
-        // filter out objects > 1km (or radius' current value)
-        filteredData = filteredData.filter(
-          el => el.distanceToSelectedAddress < this.radius
-        );
-        return filteredData;
-      }
     },
-    filteredHeatmapData: function() {
-      const coordsjson = this.heatmapData;
-      return coordsjson.map(el => [el.lat, el.lng]);
-    }
-  }
+    popularity2radius() {
+      return d3
+        .scaleSqrt()
+        .domain(d3.extent(this.filteredData, (d) => d.current_popularity))
+        .range([50, 400]);
+    },
+  },
 };
 </script>
 <style>
 .selection-pane {
   background-color: whitesmoke;
+  padding: 1rem;
 }
 h2 {
   font-size: 1.3em !important;
