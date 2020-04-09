@@ -1,10 +1,3 @@
-# Address researcher
-
-Tool to research the area around an address in Amsterdam (interface is in Dutch).
-
-Uses multiple APIs from the municipality of Amsterdam.
-
-![Screenshot of address finder application](https://adres.jurb.me/screenshot-address-research.png)
 
 ## Project setup
 
