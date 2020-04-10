@@ -157,7 +157,7 @@ export default {
       ],
 
       // TODO: get timestamp from JSON instead of clientside date
-      timeStamp: new Date(),
+      timeStamp: "",
     };
   },
   components: {
@@ -183,13 +183,12 @@ export default {
   },
   mounted: function() {
     const that = this;
-    d3.json("/data/example.json")
-      // d3.json("http://localhost:3000/places")
-      .then(function(data) {
-        that.data = data;
-        that.selectedTypes = that.typeUniques;
-        that.loading = false;
-      });
+    d3.json("/data/example.json").then(function(data) {
+      that.data = data["places"];
+      that.timeStamp = new Date(data["timestamp"]);
+      that.selectedTypes = that.typeUniques;
+      that.loading = false;
+    });
   },
   computed: {
     // set first day of the week to monday
