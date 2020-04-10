@@ -2,7 +2,12 @@
   <div>
     <h2>{{ title }}</h2>
     <b-icon icon="menu-up" />
-    <b-table :data="data" v-if="data.length">
+    <b-table
+      :data="data"
+      v-if="data.length"
+      :selected.sync="selected"
+      focusable
+    >
       <template slot-scope="props">
         <b-table-column field="name" label="Naam" width="300">
           {{ props.row.name }}
@@ -30,7 +35,20 @@
 
 <script>
 export default {
-  props: ["data", "title"],
+  props: ["data", "title", "selectedLocation"],
+  data() {
+    return {
+      selected: {},
+    };
+  },
+  watch: {
+    selected: function(value) {
+      this.$emit("selected", value);
+    },
+    selectedLocation: function(value) {
+      this.selected = this.selectedLocation;
+    },
+  },
 };
 </script>
 

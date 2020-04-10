@@ -3,16 +3,22 @@
     <div class="columns">
       <div class="column is-narrow selection-pane">
         <drukte-tabel
+          v-on:selected="setSelectedLocation"
+          :selected-location="selectedLocation"
           title="Top 10 drukke plekken ⚠️"
           :data="filteredData.slice(0, 10)"
         />
         <drukte-tabel
+          v-on:selected="setSelectedLocation"
+          :selected-location="selectedLocation"
           title="Top 5 drukke parken 🌳"
           :data="
             filteredData.filter((el) => el.types.includes('park')).slice(0, 5)
           "
         />
         <drukte-tabel
+          v-on:selected="setSelectedLocation"
+          :selected-location="selectedLocation"
           title="Top 5 drukke winkels 🛒"
           :data="
             filteredData.filter((el) => el.types.includes('store')).slice(0, 5)
@@ -56,7 +62,7 @@
             v-bind:key="point.id"
             :lat-lng="[point.coordinates.lat, point.coordinates.lng]"
             :radius="popularity2radius(point.current_popularity)"
-            color="#f03"
+            :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
             :opacity="0.5"
           >
             <l-tooltip>{{ point.name }}</l-tooltip></l-circle
@@ -93,10 +99,11 @@ export default {
         .filter((el) => el.current_popularity > 50)
         .sort((a, b) => b.current_popularity - a.current_popularity),
       selectedTypes: [],
+      selectedLocation: {},
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
       map: {
         refillData: [],
-        zoom: 11,
+        zoom: 12,
         center: L.latLng(52.3702, 4.8952),
         url:
           "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
@@ -120,6 +127,9 @@ export default {
   methods: {
     scrollToTop() {
       window.scrollTo(0, 0);
+    },
+    setSelectedLocation: function(value) {
+      this.selectedLocation = value;
     },
   },
   created: function() {
