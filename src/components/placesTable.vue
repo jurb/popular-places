@@ -22,7 +22,7 @@
         </b-table-column>
         <b-table-column
           field="usual_popularity"
-          label="Gemiddelde pop. score"
+          label="Gemiddelde huidige pop. score"
           sortable
           width="40"
         >
