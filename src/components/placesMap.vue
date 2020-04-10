@@ -15,9 +15,10 @@
     >
       <l-tooltip
         >{{ point.name }} <br />
+        Adres: {{ point.address }} <br />
 
-        Huidige pop. score: {{ point.current_popularity }}</l-tooltip
-      ></l-circle
+        Huidige pop. score: {{ point.current_popularity }}
+      </l-tooltip></l-circle
     >
   </l-map>
 </template>
