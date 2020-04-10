@@ -2,10 +2,14 @@
   <div class="home">
     <div class="columns">
       <div class="column is-narrow selection-pane">
-        <h2>
-          Data ververst op
-          {{ timeStamp.getHours() + ":" + timeStamp.getMinutes() }}
-        </h2>
+        <p class="top-info">
+          Data ververst op {{ prettyDate }}.
+          <a
+            href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+            target="_blank"
+            >Over deze kaart</a
+          >.
+        </p>
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
@@ -123,6 +127,30 @@ export default {
         "ChIJ3yDhlXMJxkcRXFBf6b2GjQU",
       ],
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
+      daysOfWeek: [
+        "zondag",
+        "maandag",
+        "dinsdag",
+        "woensdag",
+        "donderdag",
+        "vrijdag",
+        "zaterdag",
+      ],
+      months: [
+        "jan",
+        "feb",
+        "maart",
+        "april",
+        "mei",
+        "juni",
+        "juli",
+        "aug",
+        "sep",
+        "okt",
+        "nov",
+        "dec",
+      ],
+
       // TODO: get timestamp from JSON instead of clientside date
       timeStamp: new Date(),
     };
@@ -156,6 +184,16 @@ export default {
     hour: function() {
       return this.timeStamp.getHours();
     },
+    minute: function() {
+      return this.timeStamp.getMinutes();
+    },
+    prettyDate: function() {
+      return `${[
+        this.daysOfWeek[this.timeStamp.getDay()],
+        this.timeStamp.getDate(),
+        this.months[this.timeStamp.getMonth()],
+      ].join(" ")} ${this.hour}:${this.minute}`;
+    },
     typeUniques() {
       const unwantedTypes = ["point_of_interest", "establishment"];
       const filterUnwantedTypes = (el) => !unwantedTypes.includes(el);
@@ -188,11 +226,23 @@ export default {
 }
 .selectors {
   padding: 1rem;
+  margin: 1rem;
+}
+.checkbox-wrapper {
+  padding-left: 1rem;
+}
+.b-table {
+  padding: 1rem;
+}
+p {
+  font-size: 1em !important;
+  margin: 1em !important;
+  font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
 }
 h2 {
   font-size: 1.3em !important;
   margin-top: 1em !important;
-  margin-bottom: 0.3em !important;
+  /* margin-bottom: 0.3em !important; */
   margin-left: 0.6em !important ;
   font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
 }
