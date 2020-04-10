@@ -16,6 +16,7 @@
             })
           "
         />
+        {{ day }}
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
@@ -119,6 +120,8 @@ export default {
         "ChIJ3yDhlXMJxkcRXFBf6b2GjQU",
       ],
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
+      // TODO: get timestamp from JSON instead of clientside date
+      timeStamp: new Date(),
     };
   },
   components: {
@@ -143,6 +146,13 @@ export default {
     // this.selectedTypes = ["supermarket"];
   },
   computed: {
+    // set first day of the week to monday
+    day: function() {
+      return this.timeStamp.getDate() - ((this.timeStamp.getDay() + 1) % 7);
+    },
+    hour: function() {
+      return this.timeStamp.getHours();
+    },
     typeUniques() {
       const unwantedTypes = ["point_of_interest", "establishment"];
       const filterUnwantedTypes = (el) => !unwantedTypes.includes(el);
@@ -159,7 +169,11 @@ export default {
         )
         .filter(
           (el) => el.current_popularity > 0 || this.hotspots.includes(el.id)
-        );
+        )
+        .map((el) => ({
+          ...el,
+          usual_popularity: el.populartimes[this.day].data[this.hour],
+        }));
     },
   },
 };

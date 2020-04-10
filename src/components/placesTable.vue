@@ -14,19 +14,19 @@
         </b-table-column>
         <b-table-column
           field="current_popularity"
-          label="Pop. score"
+          label="Hudige pop. score"
           sortable
           width="40"
         >
           {{ props.row.current_popularity }}
         </b-table-column>
         <b-table-column
-          field="current_popularity"
-          label="Stijging laatste uur (vb)"
+          field="usual_popularity"
+          label="Gemiddelde pop. score"
           sortable
           width="40"
         >
-          {{ props.row.current_popularity }}
+          {{ props.row.usual_popularity }}
         </b-table-column>
       </template>
     </b-table>
