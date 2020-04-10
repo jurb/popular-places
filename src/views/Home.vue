@@ -6,14 +6,28 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Top 10 drukke plekken ⚠️"
-          :data="filteredData.slice(0, 10)"
+          :data="
+            getTableData({
+              data: filteredData,
+              filterProperty: 'types',
+              filterValue: 'point_of_interest',
+              sortBy: 'current_popularity',
+              numberOfRows: 10,
+            })
+          "
         />
         <drukte-tabel
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Top 5 drukke parken 🌳"
           :data="
-            filteredData.filter((el) => el.types.includes('park')).slice(0, 5)
+            getTableData({
+              data: filteredData,
+              filterProperty: 'types',
+              filterValue: 'park',
+              sortBy: 'current_popularity',
+              numberOfRows: 5,
+            })
           "
         />
         <drukte-tabel
@@ -21,7 +35,13 @@
           :selected-location="selectedLocation"
           title="Top 5 drukke winkels 🛒"
           :data="
-            filteredData.filter((el) => el.types.includes('store')).slice(0, 5)
+            getTableData({
+              data: filteredData,
+              filterProperty: 'types',
+              filterValue: 'store',
+              sortBy: 'current_popularity',
+              numberOfRows: 5,
+            })
           "
         />
         <div class="field">
@@ -95,9 +115,7 @@ export default {
   name: "home",
   data() {
     return {
-      data: data
-        .filter((el) => el.current_popularity > 50)
-        .sort((a, b) => b.current_popularity - a.current_popularity),
+      data: data.filter((el) => el.current_popularity > 50),
       selectedTypes: [],
       selectedLocation: {},
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
@@ -153,6 +171,13 @@ export default {
     },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
+    },
+    getTableData: function(obj) {
+      return obj.data
+        .filter((el) => el[obj.filterProperty].includes(obj.filterValue))
+        .slice()
+        .sort((a, b) => b[obj.sortBy] - a[obj.sortBy])
+        .slice(0, obj.numberOfRows);
     },
   },
   created: function() {
