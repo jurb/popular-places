@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" v-if="!loading">
     <div class="columns">
       <div class="column is-narrow selection-pane">
         <p class="top-info">
@@ -96,15 +96,16 @@
 </template>
 
 <script>
-import data from "../assets/data/example.json";
 import placesTable from "@/components/placesTable.vue";
 import placesMap from "@/components/placesMap.vue";
+import * as d3 from "d3";
 
 export default {
   name: "home",
   data() {
     return {
-      data: data,
+      data: [],
+      loading: true,
       selectedTypes: [],
       selectedLocation: {},
       hotspots: [
@@ -179,6 +180,14 @@ export default {
   created: function() {
     this.selectedTypes = this.typeUniques;
     // this.selectedTypes = ["supermarket"];
+  },
+  mounted: function() {
+    const that = this;
+    d3.json("http://localhost:3000/places").then(function(result) {
+      that.data = result;
+      that.selectedTypes = that.typeUniques;
+      that.loading = false;
+    });
   },
   computed: {
     // set first day of the week to monday
