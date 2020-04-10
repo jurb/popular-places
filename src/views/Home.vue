@@ -56,60 +56,20 @@
                 filteredData.filter((el) => el.types.includes(type)).length
               }})
             </b-checkbox>
-            <!-- <li
-              v-for="item in filteredData.filter((el) =>
-                el.types.includes(type)
-              )"
-              v-bind:key="type.id"
-            >
-              {{ item.address }}
-            </li> -->
           </div>
         </div>
       </div>
       <div class="column ">
-        <l-map class="map" :zoom="map.zoom" :center="map.center">
-          <l-control position="bottomright">
-            <button class="button" @click="scrollToTop">^</button>
-          </l-control>
-
-          <l-tile-layer
-            :url="map.url"
-            :attribution="map.attribution"
-          ></l-tile-layer>
-          <l-circle
-            v-for="point in filteredData"
-            v-bind:key="point.id"
-            :lat-lng="[point.coordinates.lat, point.coordinates.lng]"
-            :radius="popularity2radius(point.current_popularity)"
-            :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
-            :opacity="0.5"
-          >
-            <l-tooltip>{{ point.name }}</l-tooltip></l-circle
-          >
-        </l-map>
+        <Kaart :data="filteredData" :selected-location="selectedLocation" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import L from "leaflet";
-import {
-  LMap,
-  LTileLayer,
-  LMarker,
-  LCircleMarker,
-  LCircle,
-  LPopup,
-  LControlZoom,
-  LTooltip,
-  LControl,
-} from "vue2-leaflet";
-import "leaflet/dist/leaflet.css";
 import data from "../assets/data/example.json";
 import drukteTabel from "@/components/drukteTabel.vue";
-import * as d3 from "d3";
+import Kaart from "@/components/Kaart.vue";
 
 export default {
   name: "home",
@@ -119,14 +79,6 @@ export default {
       selectedTypes: [],
       selectedLocation: {},
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
-      map: {
-        refillData: [],
-        zoom: 12,
-        center: L.latLng(52.3702, 4.8952),
-        url:
-          "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-        attribution: "CC-BY-4.0 Gemeente Amsterdam",
-      },
       hotspots: [
         "ChIJ3-yu-E3ixUcR-obflfQkYiA",
         "Ei5SZW1icmFuZHRwbGVpbiwgMTAxNyBDViBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJa0KdZZUJxkcRgwm6RHoRfjkSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
@@ -154,21 +106,10 @@ export default {
   },
   components: {
     drukteTabel,
-    LMap,
-    LTileLayer,
-    LMarker,
-    LCircleMarker,
-    LCircle,
-    LPopup,
-    LControlZoom,
-    LTooltip,
-    LControl,
+    Kaart,
   },
   watch: {},
   methods: {
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
     },
@@ -197,12 +138,6 @@ export default {
         this.selectedTypes.some((selectedCat) => el.types.includes(selectedCat))
       );
     },
-    popularity2radius() {
-      return d3
-        .scaleSqrt()
-        .domain(d3.extent(this.filteredData, (d) => d.current_popularity))
-        .range([0, 400]);
-    },
   },
 };
 </script>
@@ -224,14 +159,5 @@ h2 {
 ul,
 .block {
   margin-left: 0.8em !important ;
-}
-
-.map {
-  height: 600px !important;
-}
-@media (min-width: 768px) {
-  .map {
-    height: 995px !important;
-  }
 }
 </style>
