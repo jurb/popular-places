@@ -9,7 +9,7 @@
             href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
             target="_blank"
             >Over deze kaart</a
-          >.
+          >
         </p>
         <places-table
           v-on:selected="setSelectedLocation"
@@ -17,11 +17,11 @@
           title="Hotspots ⚠️"
           :data="
             getTableData({
-              data: filteredData.filter((el) => hotspots.includes(el.id)),
+              data: filteredData.filter(el => hotspots.includes(el.id)),
               filterProperty: 'types',
               filterValue: 'point_of_interest',
               sortBy: 'current_popularity',
-              numberOfRows: 100,
+              numberOfRows: 100
             })
           "
         />
@@ -35,7 +35,7 @@
               filterProperty: 'types',
               filterValue: 'point_of_interest',
               sortBy: 'current_popularity',
-              numberOfRows: 10,
+              numberOfRows: 10
             })
           "
         />
@@ -49,7 +49,7 @@
               filterProperty: 'types',
               filterValue: 'park',
               sortBy: 'current_popularity',
-              numberOfRows: 5,
+              numberOfRows: 5
             })
           "
         />
@@ -63,7 +63,7 @@
               filterProperty: 'types',
               filterValue: 'store',
               sortBy: 'current_popularity',
-              numberOfRows: 5,
+              numberOfRows: 5
             })
           "
         />
@@ -80,7 +80,7 @@
           >
             <b-checkbox v-model="selectedTypes" :native-value="type"
               >{{ type }} ({{
-                filteredData.filter((el) => el.types.includes(type)).length
+                filteredData.filter(el => el.types.includes(type)).length
               }})
             </b-checkbox>
           </div>
@@ -130,7 +130,7 @@ export default {
         "ChIJ31vOlnIJxkcR_MEh-3Vit7Y",
         "ChIJJT7UXG0JxkcRojS17gAbszo",
         "EiJKYXZhc3RyYWF0LCBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJt8HB4GwJxkcRC6OBNBKjg2kSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
-        "ChIJ3yDhlXMJxkcRXFBf6b2GjQU",
+        "ChIJ3yDhlXMJxkcRXFBf6b2GjQU"
       ],
       typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
       daysOfWeek: [
@@ -140,7 +140,7 @@ export default {
         "woensdag",
         "donderdag",
         "vrijdag",
-        "zaterdag",
+        "zaterdag"
       ],
       months: [
         "jan",
@@ -154,16 +154,16 @@ export default {
         "sep",
         "okt",
         "nov",
-        "dec",
+        "dec"
       ],
 
       // TODO: get timestamp from JSON instead of clientside date
-      timeStamp: "",
+      timeStamp: ""
     };
   },
   components: {
     placesTable,
-    placesMap,
+    placesMap
   },
   watch: {},
   methods: {
@@ -175,11 +175,11 @@ export default {
     },
     getTableData: function(obj) {
       return obj.data
-        .filter((el) => el[obj.filterProperty].includes(obj.filterValue))
+        .filter(el => el[obj.filterProperty].includes(obj.filterValue))
         .slice()
         .sort((a, b) => b[obj.sortBy] - a[obj.sortBy])
         .slice(0, obj.numberOfRows);
-    },
+    }
   },
   created: function() {
     this.selectedTypes = this.typeUniques;
@@ -209,32 +209,30 @@ export default {
       return `${[
         this.daysOfWeek[this.timeStamp.getDay()],
         this.timeStamp.getDate(),
-        this.months[this.timeStamp.getMonth()],
+        this.months[this.timeStamp.getMonth()]
       ].join(" ")} ${this.hour}:${this.minute}`;
     },
     typeUniques() {
       const unwantedTypes = ["point_of_interest", "establishment"];
-      const filterUnwantedTypes = (el) => !unwantedTypes.includes(el);
-      const getUniques = (arr) => [...new Set(arr)];
-      const types = (arr) => arr.flatMap((el) => el.types);
+      const filterUnwantedTypes = el => !unwantedTypes.includes(el);
+      const getUniques = arr => [...new Set(arr)];
+      const types = arr => arr.flatMap(el => el.types);
       return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
     filteredData() {
       return this.data
-        .filter((el) =>
-          this.selectedTypes.some((selectedCat) =>
-            el.types.includes(selectedCat)
-          )
+        .filter(el =>
+          this.selectedTypes.some(selectedCat => el.types.includes(selectedCat))
         )
         .filter(
-          (el) => el.current_popularity > 0 || this.hotspots.includes(el.id)
+          el => el.current_popularity > 0 || this.hotspots.includes(el.id)
         )
-        .map((el) => ({
+        .map(el => ({
           ...el,
-          usual_popularity: el.populartimes[this.dayNumber].data[this.hour],
+          usual_popularity: el.populartimes[this.dayNumber].data[this.hour]
         }));
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
