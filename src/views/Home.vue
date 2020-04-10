@@ -72,7 +72,11 @@
             <a @click="selectedTypes = typeUniques">Selecteer alles</a> |
             <a @click="selectedTypes = []">Deselecteer alles</a>
           </p>
-          <div v-for="type in typeUniques" v-bind:key="type.id">
+          <div
+            v-for="type in typeUniques"
+            v-bind:key="type.id"
+            class="checkbox-wrapper"
+          >
             <b-checkbox v-model="selectedTypes" :native-value="type"
               >{{ type }} ({{
                 filteredData.filter((el) => el.types.includes(type)).length
