@@ -2,7 +2,7 @@
   <div class="home">
     <div class="columns">
       <div class="column is-narrow selection-pane">
-        <drukte-tabel
+        <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Top 10 drukke plekken ⚠️"
@@ -16,7 +16,7 @@
             })
           "
         />
-        <drukte-tabel
+        <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Top 5 drukke parken 🌳"
@@ -30,7 +30,7 @@
             })
           "
         />
-        <drukte-tabel
+        <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Top 5 drukke winkels 🛒"
@@ -60,7 +60,10 @@
         </div>
       </div>
       <div class="column ">
-        <Kaart :data="filteredData" :selected-location="selectedLocation" />
+        <places-map
+          :data="filteredData"
+          :selected-location="selectedLocation"
+        />
       </div>
     </div>
   </div>
@@ -68,8 +71,8 @@
 
 <script>
 import data from "../assets/data/example.json";
-import drukteTabel from "@/components/drukteTabel.vue";
-import Kaart from "@/components/Kaart.vue";
+import placesTable from "@/components/placesTable.vue";
+import placesMap from "@/components/placesMap.vue";
 
 export default {
   name: "home",
@@ -105,8 +108,8 @@ export default {
     };
   },
   components: {
-    drukteTabel,
-    Kaart,
+    placesTable,
+    placesMap,
   },
   watch: {},
   methods: {
