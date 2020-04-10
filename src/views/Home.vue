@@ -3,7 +3,8 @@
     <div class="columns">
       <div class="column is-narrow selection-pane">
         <p class="top-info">
-          Data ververst op {{ prettyDate }}.
+          Data ververst op {{ prettyDate }} <br />
+          <a @click="reloadPage">Ververs nu</a> |
           <a
             href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
             target="_blank"
@@ -166,6 +167,9 @@ export default {
   },
   watch: {},
   methods: {
+    reloadPage: function() {
+      window.location.reload(true);
+    },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
     },
