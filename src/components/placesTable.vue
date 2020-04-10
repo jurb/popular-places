@@ -14,7 +14,7 @@
         </b-table-column>
         <b-table-column
           field="current_popularity"
-          label="Hudige pop. score"
+          label="Huidige pop. score"
           sortable
           width="40"
         >

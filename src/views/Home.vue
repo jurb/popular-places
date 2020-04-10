@@ -16,7 +16,6 @@
             })
           "
         />
-        {{ day }}
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
