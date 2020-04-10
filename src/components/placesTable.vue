@@ -1,7 +1,6 @@
 <template>
   <div>
     <h2>{{ title }}</h2>
-    <b-icon icon="menu-up" />
     <b-table
       :data="data"
       v-if="data.length"
