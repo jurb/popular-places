@@ -2,6 +2,10 @@
   <div class="home">
     <div class="columns">
       <div class="column is-narrow selection-pane">
+        <h2>
+          Data ververst op
+          {{ timeStamp.getHours() + ":" + timeStamp.getMinutes() }}
+        </h2>
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
