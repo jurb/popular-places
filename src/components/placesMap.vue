@@ -13,7 +13,11 @@
       :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
       :opacity="0.5"
     >
-      <l-tooltip>{{ point.name }}</l-tooltip></l-circle
+      <l-tooltip
+        >{{ point.name }} <br />
+
+        Huidige pop. score: {{ point.current_popularity }}</l-tooltip
+      ></l-circle
     >
   </l-map>
 </template>
