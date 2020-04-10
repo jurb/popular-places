@@ -5,7 +5,21 @@
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Top 10 drukke plekken ⚠️"
+          title="Hotspots ⚠️"
+          :data="
+            getTableData({
+              data: filteredData.filter((el) => hotspots.includes(el.id)),
+              filterProperty: 'types',
+              filterValue: 'point_of_interest',
+              sortBy: 'current_popularity',
+              numberOfRows: 100,
+            })
+          "
+        />
+        <places-table
+          v-on:selected="setSelectedLocation"
+          :selected-location="selectedLocation"
+          title="Top 10 drukke plekken 🚨"
           :data="
             getTableData({
               data: filteredData,
@@ -78,10 +92,9 @@ export default {
   name: "home",
   data() {
     return {
-      data: data.filter((el) => el.current_popularity > 50),
+      data: data,
       selectedTypes: [],
       selectedLocation: {},
-      typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
       hotspots: [
         "ChIJ3-yu-E3ixUcR-obflfQkYiA",
         "Ei5SZW1icmFuZHRwbGVpbiwgMTAxNyBDViBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJa0KdZZUJxkcRgwm6RHoRfjkSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
@@ -105,6 +118,7 @@ export default {
         "EiJKYXZhc3RyYWF0LCBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJt8HB4GwJxkcRC6OBNBKjg2kSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
         "ChIJ3yDhlXMJxkcRXFBf6b2GjQU",
       ],
+      typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
     };
   },
   components: {
@@ -137,9 +151,15 @@ export default {
       return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
     filteredData() {
-      return this.data.filter((el) =>
-        this.selectedTypes.some((selectedCat) => el.types.includes(selectedCat))
-      );
+      return this.data
+        .filter((el) =>
+          this.selectedTypes.some((selectedCat) =>
+            el.types.includes(selectedCat)
+          )
+        )
+        .filter(
+          (el) => el.current_popularity > 0 || this.hotspots.includes(el.id)
+        );
     },
   },
 };
