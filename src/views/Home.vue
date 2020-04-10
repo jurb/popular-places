@@ -178,7 +178,7 @@ export default {
   },
   computed: {
     // set first day of the week to monday
-    day: function() {
+    dayNumber: function() {
       return this.timeStamp.getDate() - ((this.timeStamp.getDay() + 1) % 7);
     },
     hour: function() {
@@ -213,7 +213,7 @@ export default {
         )
         .map((el) => ({
           ...el,
-          usual_popularity: el.populartimes[this.day].data[this.hour],
+          usual_popularity: el.populartimes[this.dayNumber].data[this.hour],
         }));
     },
   },
