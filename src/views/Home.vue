@@ -4,7 +4,7 @@
       <div class="column is-narrow selection-pane">
         <p class="top-info">
           Data ververst op {{ prettyDate }} <br />
-          <a @click="reloadPage">Ververs nu</a> |
+          <a @click="reloadPage">Ververs pagina</a> |
           <a
             href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
             target="_blank"
