@@ -18,20 +18,20 @@
           {{ props.row.name }}
         </b-table-column>
         <b-table-column
-          field="current_popularity"
-          label="Huidige pop. score"
-          sortable
-          width="40"
-        >
-          {{ props.row.current_popularity }}
-        </b-table-column>
-        <b-table-column
           field="usual_popularity"
           label="Gemiddelde pop. score op deze tijd"
           sortable
           width="40"
         >
           {{ props.row.usual_popularity }}
+        </b-table-column>
+        <b-table-column
+          field="current_popularity"
+          label="Huidige pop. score"
+          sortable
+          width="40"
+        >
+          {{ props.row.current_popularity }}
         </b-table-column>
       </template>
       <template slot="detail" slot-scope="props">
