@@ -19,6 +19,8 @@
     "eslint": "^5.16.0",
     "eslint-loader": "^2.1.1",
     "eslint-plugin-vue": "^4.7.1",
+    "firebase": "^7.14.0",
+    "firebaseui": "^4.5.0",
     "haversine": "^1.1.1",
     "leaflet.heat": "^0.2.0",
     "lodash.debounce": "^4.0.8",
@@ -31,7 +33,7 @@
     "sass-loader": "^7.1.0",
     "vue": "^2.5.21",
     "vue-axios": "^2.1.4",
-    "vue-router": "^3.0.2",
+    "vue-router": "^3.1.6",
     "vue2-leaflet": "^1.2.3",
     "vue2-leaflet-heatmap": "^1.0.5"
   },

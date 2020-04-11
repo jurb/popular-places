@@ -1,18 +1,29 @@
 import Vue from "vue";
-import axios from "axios";
-import VueAxios from "vue-axios";
 import App from "./App.vue";
 import router from "./router";
 import Buefy from "buefy";
 import "./assets/css/style.scss";
 import "@mdi/font/css/materialdesignicons.css";
+import firebase from "firebase";
+import firebaseui from "firebaseui";
+import { config } from "./helpers/firebaseConfig";
 
 Vue.config.productionTip = true;
 
-Vue.use(VueAxios, axios);
 Vue.use(Buefy);
 
 new Vue({
   router,
+  created() {
+    firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.$router.push("/");
+      } else {
+        this.$router.push("/auth");
+      }
+    });
+  },
+  el: "#app",
   render: h => h(App)
-}).$mount("#app");
+});
