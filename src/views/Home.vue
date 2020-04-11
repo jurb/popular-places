@@ -156,8 +156,6 @@ export default {
         "nov",
         "dec"
       ],
-
-      // TODO: get timestamp from JSON instead of clientside date
       timeStamp: ""
     };
   },
@@ -189,7 +187,8 @@ export default {
     const that = this;
     d3.json("/data/example.json").then(function(data) {
       that.data = data["places"];
-      that.timeStamp = new Date(data["timestamp"]);
+      that.timeStamp = new Date(data["timestamp"] * 1000);
+      // console.log(that.timeStamp);
       that.selectedTypes = that.typeUniques;
       that.loading = false;
     });
@@ -197,13 +196,19 @@ export default {
   computed: {
     // set first day of the week to monday
     dayNumber: function() {
-      return this.timeStamp.getDate() - ((this.timeStamp.getDay() + 1) % 7);
+      return this.timeStamp.getDay() - 1 === -1
+        ? 6
+        : this.timeStamp.getDay() - 1;
     },
     hour: function() {
-      return this.timeStamp.getHours();
+      return this.timeStamp.getHours() < 10
+        ? "0" + this.timeStamp.getHours()
+        : this.timeStamp.getHours();
     },
     minute: function() {
-      return this.timeStamp.getMinutes();
+      return this.timeStamp.getMinutes() < 10
+        ? "0" + this.timeStamp.getMinutes()
+        : this.timeStamp.getMinutes();
     },
     prettyDate: function() {
       return `${[
@@ -230,6 +235,8 @@ export default {
         .map(el => ({
           ...el,
           usual_popularity: el.populartimes[this.dayNumber].data[this.hour]
+            ? el.populartimes[this.dayNumber].data[this.hour]
+            : 0
         }));
     }
   }
