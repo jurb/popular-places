@@ -10,6 +10,7 @@
             target="_blank"
             >Over deze kaart</a
           >
+          | <a @click="logOut">Log uit</a>
         </p>
         <places-table
           v-on:selected="setSelectedLocation"
@@ -100,6 +101,7 @@
 import placesTable from "@/components/placesTable.vue";
 import placesMap from "@/components/placesMap.vue";
 import * as d3 from "d3";
+import firebase from "firebase";
 
 export default {
   name: "home",
@@ -165,6 +167,9 @@ export default {
   },
   watch: {},
   methods: {
+    logOut() {
+      firebase.auth().signOut();
+    },
     reloadPage: function() {
       window.location.reload(true);
     },
@@ -185,7 +190,7 @@ export default {
   },
   mounted: function() {
     const that = this;
-    d3.json("/data/example.json").then(function(data) {
+    d3.json("/data/newest.json").then(function(data) {
       that.data = data["places"];
       that.timeStamp = new Date(data["timestamp"] * 1000);
       // console.log(that.timeStamp);
@@ -234,7 +239,7 @@ export default {
         )
         .map(el => ({
           ...el,
-          usual_popularity: el.populartimes[this.dayNumber].data[this.hour]
+          usual_popularity: el.populartimes
             ? el.populartimes[this.dayNumber].data[this.hour]
             : 0
         }));
