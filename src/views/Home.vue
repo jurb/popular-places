@@ -235,9 +235,6 @@ export default {
         .filter(el =>
           this.selectedTypes.some(selectedCat => el.types.includes(selectedCat))
         )
-        .filter(
-          el => el.current_popularity > 0 || this.hotspots.includes(el.id)
-        )
         .map(el => ({
           ...el,
           usual_popularity: el.populartimes
