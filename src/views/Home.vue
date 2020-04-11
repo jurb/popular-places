@@ -101,7 +101,8 @@
 import placesTable from "@/components/placesTable.vue";
 import placesMap from "@/components/placesMap.vue";
 import * as d3 from "d3";
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
   name: "home",
