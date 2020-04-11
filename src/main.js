@@ -5,9 +5,9 @@ import App from "./App.vue";
 import router from "./router";
 import Buefy from "buefy";
 import "./assets/css/style.scss";
+import "@mdi/font/css/materialdesignicons.css";
 
 Vue.config.productionTip = true;
-
 
 Vue.use(VueAxios, axios);
 Vue.use(Buefy);

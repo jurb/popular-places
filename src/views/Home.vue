@@ -21,49 +21,49 @@
               filterProperty: 'types',
               filterValue: 'point_of_interest',
               sortBy: 'current_popularity',
-              numberOfRows: 100
+              numberOfRows: 9999
             })
           "
         />
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Top 10 drukke plekken 🚨"
+          title="Alle plekken 🚨"
           :data="
             getTableData({
               data: filteredData,
               filterProperty: 'types',
               filterValue: 'point_of_interest',
               sortBy: 'current_popularity',
-              numberOfRows: 10
+              numberOfRows: 9999
             })
           "
         />
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Top 5 drukke parken 🌳"
+          title="Parken 🌳"
           :data="
             getTableData({
               data: filteredData,
               filterProperty: 'types',
               filterValue: 'park',
               sortBy: 'current_popularity',
-              numberOfRows: 5
+              numberOfRows: 9999
             })
           "
         />
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Top 5 drukke winkels 🛒"
+          title="Winkels 🛒"
           :data="
             getTableData({
               data: filteredData,
               filterProperty: 'types',
               filterValue: 'store',
               sortBy: 'current_popularity',
-              numberOfRows: 5
+              numberOfRows: 9999
             })
           "
         />

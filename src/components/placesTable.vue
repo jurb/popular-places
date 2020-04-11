@@ -5,7 +5,13 @@
       :data="data"
       v-if="data.length"
       :selected.sync="selected"
+      default-sort="current_popularity"
+      default-sort-direction="desc"
       focusable
+      detailed
+      paginated
+      sort-icon="^"
+      per-page="10"
     >
       <template slot-scope="props">
         <b-table-column field="name" label="Naam" width="300">
@@ -28,6 +34,9 @@
           {{ props.row.usual_popularity }}
         </b-table-column>
       </template>
+      <template slot="detail" slot-scope="props">
+        <span>{{ props.row.address }}</span></template
+      >
     </b-table>
   </div>
 </template>
@@ -37,7 +46,7 @@ export default {
   props: ["data", "title", "selectedLocation"],
   data() {
     return {
-      selected: {},
+      selected: {}
     };
   },
   watch: {
@@ -46,8 +55,8 @@ export default {
     },
     selectedLocation: function(value) {
       this.selected = this.selectedLocation;
-    },
-  },
+    }
+  }
 };
 </script>
 
