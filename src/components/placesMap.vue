@@ -21,7 +21,8 @@
           >{{ point.name }} <br />
           Adres: {{ point.address.split(",")[0] }} <br />
 
-          Huidige pop. score: {{ point.current_popularity }}
+          Huidige pop. score: {{ point.current_popularity }} <br />
+          Normale pop. score: {{ point.usual_popularity }}
         </l-tooltip></l-circle
       >
     </l-map>
