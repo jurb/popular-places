@@ -239,7 +239,11 @@ export default {
           ...el,
           usual_popularity: el.populartimes
             ? el.populartimes[this.dayNumber].data[this.hour]
-            : 0
+            : null,
+          difference: el.current_popularity
+            ? el.current_popularity -
+              el.populartimes[this.dayNumber].data[this.hour]
+            : null
         }));
     }
   }
@@ -258,7 +262,10 @@ export default {
   padding-left: 1rem;
 }
 .b-table {
-  padding: 1rem;
+  padding: 0rem;
+}
+.b-table:focus {
+  outline: none;
 }
 p {
   font-size: 1em !important;
@@ -268,6 +275,8 @@ p {
 h2 {
   font-size: 1.3em !important;
   margin-top: 1em !important;
+  margin-bottom: 0.5em !important;
+
   /* margin-bottom: 0.3em !important; */
   margin-left: 0.6em !important ;
   font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;

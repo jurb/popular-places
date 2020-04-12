@@ -7,32 +7,36 @@
       :selected.sync="selected"
       default-sort="current_popularity"
       default-sort-direction="desc"
-      focusable
       detailed
       paginated
       sort-icon="^"
       per-page="10"
+      narrowed
+      :mobile-cards="false"
     >
       <template slot-scope="props">
         <b-table-column field="name" label="Naam" width="300">
           {{ props.row.name }}
         </b-table-column>
         <b-table-column
-          field="usual_popularity"
-          label="Gemiddelde pop. score op deze tijd"
-          sortable
-          width="40"
-        >
-          {{ props.row.usual_popularity }}
-        </b-table-column>
-        <b-table-column
           field="current_popularity"
-          label="Huidige pop. score"
+          label="Huidig"
           sortable
           width="40"
         >
           {{ props.row.current_popularity }}
         </b-table-column>
+        <b-table-column
+          field="usual_popularity"
+          label="Normaal"
+          sortable
+          width="40"
+        >
+          {{ props.row.usual_popularity }}
+        </b-table-column>
+        <!-- <b-table-column field="difference" label="Verschil" sortable width="40">
+          {{ props.row.difference }}
+        </b-table-column> -->
       </template>
       <template slot="detail" slot-scope="props">
         <span>{{ props.row.address }}</span></template
@@ -60,4 +64,10 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.b-table .table th {
+  font-weight: 600;
+  // font-size: 0.7rem;
+  hyphens: manual;
+}
+</style>
