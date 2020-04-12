@@ -25,12 +25,7 @@
         </l-tooltip></l-circle
       >
     </l-map>
-    <p>
-      <em
-        >Hoe groter de cirkel, hoe drukker de plek is dan gebruikelijk op dit
-        tijdstip.</em
-      >
-    </p>
+    <p><em>Hoe groter de cirkel, hoe drukker de plek op dit moment is.</em></p>
   </div>
 </template>
 
