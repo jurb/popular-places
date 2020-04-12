@@ -6,8 +6,6 @@ import "./assets/css/style.scss";
 import "@mdi/font/css/materialdesignicons.css";
 import firebase from "firebase/app";
 import "firebase/auth";
-
-import firebaseui from "firebaseui";
 import { config } from "./helpers/firebaseConfig";
 
 Vue.config.productionTip = true;
