@@ -19,7 +19,7 @@
       >
         <l-tooltip
           >{{ point.name }} <br />
-          Adres: {{ point.address }} <br />
+          Adres: {{ point.address.split(",")[0] }} <br />
 
           Huidige pop. score: {{ point.current_popularity }}
         </l-tooltip></l-circle
