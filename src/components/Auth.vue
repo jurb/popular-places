@@ -44,7 +44,7 @@ export default {
           self.loginForm.email,
           self.loginForm.password
         )
-        .then(res => self.$router.push(`/`))
+        .then(res => self.$router.push(`/places`))
         .catch(error => {
           console.log(error);
         });
