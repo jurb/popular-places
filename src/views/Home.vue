@@ -172,7 +172,7 @@ export default {
       firebase.auth().signOut();
     },
     reloadPage: function() {
-      window.location.reload(true);
+      window.location.assign("/");
     },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
