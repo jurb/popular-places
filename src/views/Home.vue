@@ -207,11 +207,17 @@ export default {
         : this.timeStamp.getDay() - 1;
     },
     hour: function() {
+      return this.timeStamp.getHours();
+    },
+    prettyHour: function() {
       return this.timeStamp.getHours() < 10
         ? "0" + this.timeStamp.getHours()
         : this.timeStamp.getHours();
     },
     minute: function() {
+      return this.timeStamp.getMinutes();
+    },
+    prettyMinute: function() {
       return this.timeStamp.getMinutes() < 10
         ? "0" + this.timeStamp.getMinutes()
         : this.timeStamp.getMinutes();
@@ -221,7 +227,7 @@ export default {
         this.daysOfWeek[this.timeStamp.getDay()],
         this.timeStamp.getDate(),
         this.months[this.timeStamp.getMonth()]
-      ].join(" ")} ${this.hour}:${this.minute}`;
+      ].join(" ")} ${this.prettyHour}:${this.prettyMinute}`;
     },
     typeUniques() {
       const unwantedTypes = ["point_of_interest", "establishment"];
