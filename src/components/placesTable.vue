@@ -5,7 +5,7 @@
       :data="data"
       v-if="data.length"
       :selected.sync="selected"
-      default-sort="current_popularity"
+      :default-sort="sortBy"
       default-sort-direction="desc"
       detailed
       paginated
@@ -34,6 +34,9 @@
         >
           {{ props.row.usual_popularity }}
         </b-table-column>
+        <b-table-column field="difference" label="Verschil" sortable width="40">
+          {{ props.row.difference }}
+        </b-table-column>
         <!-- <b-table-column field="difference" label="Verschil" sortable width="40">
           {{ props.row.difference }}
         </b-table-column> -->
@@ -47,7 +50,7 @@
 
 <script>
 export default {
-  props: ["data", "title", "selectedLocation"],
+  props: ["data", "title", "selectedLocation", "sortBy"],
   data() {
     return {
       selected: {}
