@@ -61,6 +61,7 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Parken 🌳"
+          sortBy="current_popularity"
           :data="
             getTableData({
               data: filteredData,
