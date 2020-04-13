@@ -76,6 +76,7 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Winkels 🛒"
+          sortBy="current_popularity"
           :data="
             getTableData({
               data: filteredData,
