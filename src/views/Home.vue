@@ -12,7 +12,7 @@
           >
           | <a @click="logOut">Log uit</a>
         </p>
-        <places-table
+        <!-- <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Hotspots ⚠️"
@@ -26,7 +26,7 @@
               numberOfRows: 9999
             })
           "
-        />
+        /> -->
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
