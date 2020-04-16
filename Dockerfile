@@ -1,3 +1,14 @@
+# Develop stage
+FROM node:11.1-alpine as develop-stage
+#FROM node:13.13.0-alpine3.10 as develop-stage
+WORKDIR /app
+COPY package*.json ./
+RUN yarn install
+COPY . .
+# build stage
+FROM develop-stage as build-stage
+RUN yarn build
+
 # Copy static docs to alpine-based nginx container.
 FROM nginx:alpine
 
@@ -8,7 +19,8 @@ RUN apk add --no-cache bash
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
-COPY dist /usr/share/nginx/html
+#COPY dist /usr/share/nginx/html
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Add non-privileged user
 RUN adduser -D -u 1001 appuser
