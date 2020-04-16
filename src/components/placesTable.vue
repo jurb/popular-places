@@ -50,7 +50,7 @@
 
 <script>
 export default {
-  props: ["data", "title", "selectedLocation", "sortBy"],
+  props: ['data', 'title', 'selectedLocation', 'sortBy'],
   data() {
     return {
       selected: {}
@@ -58,9 +58,9 @@ export default {
   },
   watch: {
     selected: function(value) {
-      this.$emit("selected", value);
+      this.$emit('selected', value);
     },
-    selectedLocation: function(value) {
+    selectedLocation: function() {
       this.selected = this.selectedLocation;
     }
   }
