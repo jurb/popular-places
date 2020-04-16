@@ -19,10 +19,28 @@
       >
         <l-tooltip
           >{{ point.name }} <br />
-          Adres: {{ point.address.split(",")[0] }} <br />
+          Adres: {{ point.address.split(',')[0] }} <br />
 
           Huidige pop. score: {{ point.current_popularity }} <br />
-          Normale pop. score: {{ point.usual_popularity }}
+          Normale pop. score: {{ point.usual_popularity }} <br />
+          Laatst ververst op:
+          {{
+            `${new Date(point.scraped_at * 1000).getDate()} ${
+              months[new Date(point.scraped_at * 1000).getMonth()]
+            } ${new Date(point.scraped_at * 1000).getFullYear()}
+            ${
+              new Date(point.scraped_at * 1000).getHours() < 10
+                ? '0' + new Date(point.scraped_at * 1000).getHours()
+                : new Date(point.scraped_at * 1000).getHours()
+            }:${
+              new Date(point.scraped_at * 1000).getMinutes() < 10
+                ? '0' + new Date(point.scraped_at * 1000).getMinutes()
+                : new Date(point.scraped_at * 1000).getMinutes()
+            }
+
+
+            `
+          }}
         </l-tooltip></l-circle
       >
     </l-map>
@@ -31,7 +49,7 @@
 </template>
 
 <script>
-import L from "leaflet";
+import L from 'leaflet';
 import {
   LMap,
   LTileLayer,
@@ -42,22 +60,36 @@ import {
   LControlZoom,
   LTooltip,
   LControl
-} from "vue2-leaflet";
-import "leaflet/dist/leaflet.css";
-import * as d3 from "d3";
+} from 'vue2-leaflet';
+import 'leaflet/dist/leaflet.css';
+import * as d3 from 'd3';
 
 export default {
-  name: "kaart",
-  props: ["data", "selectedLocation"],
+  name: 'kaart',
+  props: ['data', 'selectedLocation'],
   data() {
     return {
+      months: [
+        'jan',
+        'feb',
+        'maart',
+        'april',
+        'mei',
+        'juni',
+        'juli',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec'
+      ],
       map: {
         refillData: [],
         zoom: 12,
         center: L.latLng(52.3702, 4.8952),
         url:
-          "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png",
-        attribution: "CC-BY-4.0 Gemeente Amsterdam"
+          'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+        attribution: 'CC-BY-4.0 Gemeente Amsterdam'
       },
       localData: this.data
     };
