@@ -117,14 +117,14 @@
 </template>
 
 <script>
-import placesTable from "@/components/placesTable.vue";
-import placesMap from "@/components/placesMap.vue";
-import * as d3 from "d3";
-import firebase from "firebase/app";
-import "firebase/auth";
+import placesTable from '@/components/placesTable.vue';
+import placesMap from '@/components/placesMap.vue';
+import * as d3 from 'd3';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 export default {
-  name: "home",
+  name: 'home',
   data() {
     return {
       data: [],
@@ -132,53 +132,53 @@ export default {
       selectedTypes: [],
       selectedLocation: {},
       hotspots: [
-        "ChIJ3-yu-E3ixUcR-obflfQkYiA",
-        "Ei5SZW1icmFuZHRwbGVpbiwgMTAxNyBDViBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJa0KdZZUJxkcRgwm6RHoRfjkSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
-        "EjBCdWlrc2xvdGVybWVlcnBsZWluLCAxMDI1IEFtc3RlcmRhbSwgTmV0aGVybGFuZHMiLiosChQKEglrIQZE8AjGRxHjrXuALvUDYRIUChIJVXealLU_xkcRja_At0z9AGY",
-        "ChIJy3MKglYIxkcRb-OM2GyApmo",
-        "ChIJV7MaFnYJxkcRRsotO9L0WOI",
-        "ChIJWZty4NQLxkcRNmSIszATuOA",
-        "ChIJKZeiT14JxkcR0tUJvUKNBAY",
-        "ChIJgTYLOoUJxkcR735HWTtRTlI",
-        "ChIJfUgDKG_ixUcR_MEY4khE4Xs",
-        "ChIJgVQWenbixUcRBZiubJ1c4AM",
-        "Ei9aYWFuZGFtbWVycGxlaW4sIDEwMTMgWkUgQW1zdGVyZGFtLCBOZXRoZXJsYW5kcyIuKiwKFAoSCf9YDVwqCMZHEY16GSj6-fOMEhQKEglVd5qUtT_GRxGNr8C3TP0AZg",
-        "ChIJy_w8o40JxkcRUCcFTTKggzU",
-        "ChIJz3y0xeIJxkcRNcogBVV41Gw",
-        "ChIJGVr5mwrixUcR0wyF4_ZhsjQ",
-        "ChIJPx19owvixUcRG-3BcoJQN2w",
-        "ChIJy_w8o40JxkcRUCcFTTKggzU",
-        "ChIJz3y0xeIJxkcRNcogBVV41Gw",
-        "ChIJ31vOlnIJxkcR_MEh-3Vit7Y",
-        "ChIJJT7UXG0JxkcRojS17gAbszo",
-        "EiJKYXZhc3RyYWF0LCBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJt8HB4GwJxkcRC6OBNBKjg2kSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm",
-        "ChIJ3yDhlXMJxkcRXFBf6b2GjQU"
+        'ChIJ3-yu-E3ixUcR-obflfQkYiA',
+        'Ei5SZW1icmFuZHRwbGVpbiwgMTAxNyBDViBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJa0KdZZUJxkcRgwm6RHoRfjkSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm',
+        'EjBCdWlrc2xvdGVybWVlcnBsZWluLCAxMDI1IEFtc3RlcmRhbSwgTmV0aGVybGFuZHMiLiosChQKEglrIQZE8AjGRxHjrXuALvUDYRIUChIJVXealLU_xkcRja_At0z9AGY',
+        'ChIJy3MKglYIxkcRb-OM2GyApmo',
+        'ChIJV7MaFnYJxkcRRsotO9L0WOI',
+        'ChIJWZty4NQLxkcRNmSIszATuOA',
+        'ChIJKZeiT14JxkcR0tUJvUKNBAY',
+        'ChIJgTYLOoUJxkcR735HWTtRTlI',
+        'ChIJfUgDKG_ixUcR_MEY4khE4Xs',
+        'ChIJgVQWenbixUcRBZiubJ1c4AM',
+        'Ei9aYWFuZGFtbWVycGxlaW4sIDEwMTMgWkUgQW1zdGVyZGFtLCBOZXRoZXJsYW5kcyIuKiwKFAoSCf9YDVwqCMZHEY16GSj6-fOMEhQKEglVd5qUtT_GRxGNr8C3TP0AZg',
+        'ChIJy_w8o40JxkcRUCcFTTKggzU',
+        'ChIJz3y0xeIJxkcRNcogBVV41Gw',
+        'ChIJGVr5mwrixUcR0wyF4_ZhsjQ',
+        'ChIJPx19owvixUcRG-3BcoJQN2w',
+        'ChIJy_w8o40JxkcRUCcFTTKggzU',
+        'ChIJz3y0xeIJxkcRNcogBVV41Gw',
+        'ChIJ31vOlnIJxkcR_MEh-3Vit7Y',
+        'ChIJJT7UXG0JxkcRojS17gAbszo',
+        'EiJKYXZhc3RyYWF0LCBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJt8HB4GwJxkcRC6OBNBKjg2kSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm',
+        'ChIJ3yDhlXMJxkcRXFBf6b2GjQU'
       ],
-      typesOfInterest: ["park", "store", "hardware_store", "supermarket"],
+      typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
       daysOfWeek: [
-        "zondag",
-        "maandag",
-        "dinsdag",
-        "woensdag",
-        "donderdag",
-        "vrijdag",
-        "zaterdag"
+        'zondag',
+        'maandag',
+        'dinsdag',
+        'woensdag',
+        'donderdag',
+        'vrijdag',
+        'zaterdag'
       ],
       months: [
-        "jan",
-        "feb",
-        "maart",
-        "april",
-        "mei",
-        "juni",
-        "juli",
-        "aug",
-        "sep",
-        "okt",
-        "nov",
-        "dec"
+        'jan',
+        'feb',
+        'maart',
+        'april',
+        'mei',
+        'juni',
+        'juli',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec'
       ],
-      timeStamp: ""
+      timeStamp: ''
     };
   },
   components: {
@@ -191,7 +191,7 @@ export default {
       firebase.auth().signOut();
     },
     reloadPage: function() {
-      window.location.assign("/");
+      window.location.assign('/');
     },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
@@ -210,9 +210,17 @@ export default {
   },
   mounted: function() {
     const that = this;
-    d3.json("/data/newest.json").then(function(data) {
-      that.data = data["places"];
-      that.timeStamp = new Date(data["timestamp"] * 1000);
+    d3.json('https://covid19.api.commondatafactory.nl/current', {
+      headers: new Headers({
+        Authorization: `Basic ${btoa(
+          `${process.env.VUE_APP_PLACES_API_USER}:${
+            process.env.VUE_APP_PLACES_API_PASS
+          }`
+        )}`
+      })
+    }).then(function(data) {
+      that.data = data['places'];
+      that.timeStamp = new Date(data['timestamp'] * 1000);
       // console.log(that.timeStamp);
       that.selectedTypes = that.typeUniques;
       that.loading = false;
@@ -230,7 +238,7 @@ export default {
     },
     prettyHour: function() {
       return this.timeStamp.getHours() < 10
-        ? "0" + this.timeStamp.getHours()
+        ? '0' + this.timeStamp.getHours()
         : this.timeStamp.getHours();
     },
     minute: function() {
@@ -238,7 +246,7 @@ export default {
     },
     prettyMinute: function() {
       return this.timeStamp.getMinutes() < 10
-        ? "0" + this.timeStamp.getMinutes()
+        ? '0' + this.timeStamp.getMinutes()
         : this.timeStamp.getMinutes();
     },
     prettyDate: function() {
@@ -246,10 +254,10 @@ export default {
         this.daysOfWeek[this.timeStamp.getDay()],
         this.timeStamp.getDate(),
         this.months[this.timeStamp.getMonth()]
-      ].join(" ")} ${this.prettyHour}:${this.prettyMinute}`;
+      ].join(' ')} ${this.prettyHour}:${this.prettyMinute}`;
     },
     typeUniques() {
-      const unwantedTypes = ["point_of_interest", "establishment"];
+      const unwantedTypes = ['point_of_interest', 'establishment'];
       const filterUnwantedTypes = el => !unwantedTypes.includes(el);
       const getUniques = arr => [...new Set(arr)];
       const types = arr => arr.flatMap(el => el.types);
