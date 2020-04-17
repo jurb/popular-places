@@ -1,7 +1,7 @@
 <template>
   <div class="home" v-if="!loading">
     <div class="columns">
-      <div class="column is-narrow selection-pane">
+      <div class="column is-half is-narrow selection-pane">
         <p class="top-info">
           Data ververst op {{ prettyDate }} <br />
           <a @click="reloadPage">Ververs pagina</a> |
@@ -12,21 +12,6 @@
           >
           | <a @click="logOut">Log uit</a>
         </p>
-        <!-- <places-table
-          v-on:selected="setSelectedLocation"
-          :selected-location="selectedLocation"
-          title="Hotspots ⚠️"
-          sortBy="current_popularity"
-          :data="
-            getTableData({
-              data: filteredData.filter(el => hotspots.includes(el.id)),
-              filterProperty: 'types',
-              filterValue: 'point_of_interest',
-              sortBy: 'current_popularity',
-              numberOfRows: 9999
-            })
-          "
-        /> -->
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
@@ -131,29 +116,6 @@ export default {
       loading: true,
       selectedTypes: [],
       selectedLocation: {},
-      hotspots: [
-        'ChIJ3-yu-E3ixUcR-obflfQkYiA',
-        'Ei5SZW1icmFuZHRwbGVpbiwgMTAxNyBDViBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJa0KdZZUJxkcRgwm6RHoRfjkSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm',
-        'EjBCdWlrc2xvdGVybWVlcnBsZWluLCAxMDI1IEFtc3RlcmRhbSwgTmV0aGVybGFuZHMiLiosChQKEglrIQZE8AjGRxHjrXuALvUDYRIUChIJVXealLU_xkcRja_At0z9AGY',
-        'ChIJy3MKglYIxkcRb-OM2GyApmo',
-        'ChIJV7MaFnYJxkcRRsotO9L0WOI',
-        'ChIJWZty4NQLxkcRNmSIszATuOA',
-        'ChIJKZeiT14JxkcR0tUJvUKNBAY',
-        'ChIJgTYLOoUJxkcR735HWTtRTlI',
-        'ChIJfUgDKG_ixUcR_MEY4khE4Xs',
-        'ChIJgVQWenbixUcRBZiubJ1c4AM',
-        'Ei9aYWFuZGFtbWVycGxlaW4sIDEwMTMgWkUgQW1zdGVyZGFtLCBOZXRoZXJsYW5kcyIuKiwKFAoSCf9YDVwqCMZHEY16GSj6-fOMEhQKEglVd5qUtT_GRxGNr8C3TP0AZg',
-        'ChIJy_w8o40JxkcRUCcFTTKggzU',
-        'ChIJz3y0xeIJxkcRNcogBVV41Gw',
-        'ChIJGVr5mwrixUcR0wyF4_ZhsjQ',
-        'ChIJPx19owvixUcRG-3BcoJQN2w',
-        'ChIJy_w8o40JxkcRUCcFTTKggzU',
-        'ChIJz3y0xeIJxkcRNcogBVV41Gw',
-        'ChIJ31vOlnIJxkcR_MEh-3Vit7Y',
-        'ChIJJT7UXG0JxkcRojS17gAbszo',
-        'EiJKYXZhc3RyYWF0LCBBbXN0ZXJkYW0sIE5ldGhlcmxhbmRzIi4qLAoUChIJt8HB4GwJxkcRC6OBNBKjg2kSFAoSCVV3mpS1P8ZHEY2vwLdM_QBm',
-        'ChIJ3yDhlXMJxkcRXFBf6b2GjQU'
-      ],
       typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
       daysOfWeek: [
         'zondag',
