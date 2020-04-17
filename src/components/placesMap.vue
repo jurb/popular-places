@@ -113,9 +113,10 @@ export default {
   },
   computed: {
     popularity2radius: function() {
+      // console.log([0, d3.max(this.localData, d => d.current_popularity)]);
       return d3
         .scaleSqrt()
-        .domain(d3.extent(this.localData, d => d.current_popularity))
+        .domain([0, d3.max(this.localData, d => d.current_popularity)])
         .range([0, 400]);
     }
   }
