@@ -17,7 +17,7 @@
         :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
         :opacity="0.5"
       >
-        <l-tooltip
+        <l-popup
           >{{ point.name }} <br />
           Adres: {{ point.address.split(',')[0] }} <br />
 
@@ -36,12 +36,16 @@
               new Date(point.scraped_at * 1000).getMinutes() < 10
                 ? '0' + new Date(point.scraped_at * 1000).getMinutes()
                 : new Date(point.scraped_at * 1000).getMinutes()
-            }
-
-
-            `
+            }`
           }}
-        </l-tooltip></l-circle
+          <br />
+          <a
+            :href="`https://www.google.com/maps?q=${point.name}`"
+            target="_blank"
+            s
+            >Google Maps</a
+          >
+        </l-popup></l-circle
       >
     </l-map>
     <p><em>Hoe groter de cirkel, hoe drukker de plek op dit moment is.</em></p>
