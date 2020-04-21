@@ -4,7 +4,6 @@
       <l-control position="bottomright">
         <button class="button" @click="scrollToTop">^</button>
       </l-control>
-
       <l-tile-layer
         :url="map.url"
         :attribution="map.attribution"
@@ -17,8 +16,9 @@
         :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
         :opacity="0.5"
       >
-        <l-popup
-          >{{ point.name }} <br />
+        <l-tooltip>{{ point.name }} </l-tooltip
+        ><l-popup>
+          {{ point.name }} <br />
           Adres: {{ point.address.split(',')[0] }} <br />
 
           Huidige pop. score: {{ point.current_popularity }} <br />
@@ -44,8 +44,8 @@
             target="_blank"
             s
             >Google Maps</a
-          >
-        </l-popup></l-circle
+          ></l-popup
+        ></l-circle
       >
     </l-map>
     <p><em>Hoe groter de cirkel, hoe drukker de plek op dit moment is.</em></p>
@@ -118,10 +118,16 @@ export default {
   computed: {
     popularity2radius: function() {
       // console.log([0, d3.max(this.localData, d => d.current_popularity)]);
-      return d3
-        .scaleSqrt()
-        .domain([0, d3.max(this.localData, d => d.current_popularity)])
-        .range([0, 400]);
+      console.log(d3.extent(this.localData, d => d.difference));
+      return (
+        d3
+          .scaleSqrt()
+          // .domain(d3.extent(this.localData, d => d.difference))
+          // .domain(d3.extent(this.localData, d => d.current_popularity))
+          // .domain([0, d3.max(this.localData, d => d.current_popularity)])
+          .domain([0, 200])
+          .range([0, 200])
+      );
     }
   }
 };
