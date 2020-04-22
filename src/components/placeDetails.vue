@@ -34,29 +34,6 @@ export default {
       return (that.data = data);
     });
   },
-  methods: {
-    //     enhanceData: function() {
-    //       const currentMeasurement = d3.max(this.data['measurements'], d => d);
-    //       const measurementsDates = this.data['measurements'].map(el => ({
-    //         date: new Date(el[0] * 1000),
-    //         hour: new Date(el[0] * 1000).getHours(),
-    //         day: new Date(el[0] * 1000).getDay(),
-    //         measurement: el[1]
-    //       }));
-    //       return this.data
-    //         ? {
-    //             ...this.data,
-    //             currentMeasurement: Object.assign({
-    //               date: new Date(currentMeasurement[0] * 1000),
-    //               hour: new Date(currentMeasurement[0] * 1000).getHours(),
-    //               day: new Date(currentMeasurement[0] * 1000).getDay(),
-    //               measurement: currentMeasurement[1]
-    //             }),
-    //             measurements: measurementsDates
-    //           }
-    //         : {};
-    //     }
-  },
   computed: {
     currentMeasurement: function() {
       const timestamp = () => d3.max(this.data['measurements'], d => d[0]);
