@@ -1,6 +1,11 @@
 <template>
   <div>
-    <l-map class="map" :zoom="map.zoom" :center="map.center">
+    <l-map
+      class="map"
+      :zoom="map.zoom"
+      :center="map.center"
+      :options="{ preferCanvas: true }"
+    >
       <l-control position="bottomright">
         <button class="button" @click="scrollToTop">^</button>
       </l-control>
@@ -118,7 +123,7 @@ export default {
   computed: {
     popularity2radius: function() {
       // console.log([0, d3.max(this.localData, d => d.current_popularity)]);
-      console.log(d3.extent(this.localData, d => d.difference));
+      // console.log(d3.extent(this.localData, d => d.difference));
       return (
         d3
           .scaleSqrt()
