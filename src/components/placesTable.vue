@@ -42,15 +42,17 @@
         </b-table-column> -->
       </template>
       <template slot="detail" slot-scope="props">
-        <span>{{ props.row.address }}</span></template
-      >
+        <place-details :id="props.row.id" />
+      </template>
     </b-table>
   </div>
 </template>
 
 <script>
+import placeDetails from '@/components/placeDetails.vue';
 export default {
   props: ['data', 'title', 'selectedLocation', 'sortBy'],
+  components: { placeDetails },
   data() {
     return {
       selected: {}
