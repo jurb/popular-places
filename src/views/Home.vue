@@ -2,6 +2,7 @@
   <div class="home" v-if="!loading">
     <div class="columns">
       <div class="column is-half is-narrow selection-pane">
+        <!-- <history-chart :data="data" /> -->
         <p class="top-info">
           Data ververst op {{ prettyDate }} <br />
           <a @click="reloadPage">Ververs pagina</a> |
@@ -104,6 +105,7 @@
 <script>
 import placesTable from '@/components/placesTable.vue';
 import placesMap from '@/components/placesMap.vue';
+import historyChart from '@/components/historyChart.vue';
 import * as d3 from 'd3';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -140,12 +142,13 @@ export default {
         'nov',
         'dec'
       ],
-      timeStamp: ''
+      timestamp: ''
     };
   },
   components: {
     placesTable,
-    placesMap
+    placesMap,
+    historyChart
   },
   watch: {},
   methods: {
@@ -182,8 +185,8 @@ export default {
       })
     }).then(function(data) {
       that.data = data['places'];
-      that.timeStamp = new Date(data['timestamp'] * 1000);
-      // console.log(that.timeStamp);
+      that.timestamp = new Date(data['timestamp'] * 1000);
+      // console.log(that.timestamp);
       that.selectedTypes = that.typeUniques;
       that.loading = false;
     });
@@ -191,31 +194,31 @@ export default {
   computed: {
     // set first day of the week to monday
     dayNumber: function() {
-      return this.timeStamp.getDay() - 1 === -1
+      return this.timestamp.getDay() - 1 === -1
         ? 6
-        : this.timeStamp.getDay() - 1;
+        : this.timestamp.getDay() - 1;
     },
     hour: function() {
-      return this.timeStamp.getHours();
+      return this.timestamp.getHours();
     },
     prettyHour: function() {
-      return this.timeStamp.getHours() < 10
-        ? '0' + this.timeStamp.getHours()
-        : this.timeStamp.getHours();
+      return this.timestamp.getHours() < 10
+        ? '0' + this.timestamp.getHours()
+        : this.timestamp.getHours();
     },
     minute: function() {
-      return this.timeStamp.getMinutes();
+      return this.timestamp.getMinutes();
     },
     prettyMinute: function() {
-      return this.timeStamp.getMinutes() < 10
-        ? '0' + this.timeStamp.getMinutes()
-        : this.timeStamp.getMinutes();
+      return this.timestamp.getMinutes() < 10
+        ? '0' + this.timestamp.getMinutes()
+        : this.timestamp.getMinutes();
     },
     prettyDate: function() {
       return `${[
-        this.daysOfWeek[this.timeStamp.getDay()],
-        this.timeStamp.getDate(),
-        this.months[this.timeStamp.getMonth()]
+        this.daysOfWeek[this.timestamp.getDay()],
+        this.timestamp.getDate(),
+        this.months[this.timestamp.getMonth()]
       ].join(' ')} ${this.prettyHour}:${this.prettyMinute}`;
     },
     typeUniques() {
