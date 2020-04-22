@@ -105,7 +105,6 @@
 <script>
 import placesTable from '@/components/placesTable.vue';
 import placesMap from '@/components/placesMap.vue';
-import historyChart from '@/components/historyChart.vue';
 import * as d3 from 'd3';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -147,8 +146,7 @@ export default {
   },
   components: {
     placesTable,
-    placesMap,
-    historyChart
+    placesMap
   },
   watch: {},
   methods: {
