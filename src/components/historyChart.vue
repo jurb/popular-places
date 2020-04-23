@@ -56,7 +56,7 @@ export default {
     currentMeasurement: Object
   },
   mounted() {
-    this.svgWidth = document.getElementById('container').offsetWidth * 0.85;
+    this.svgWidth = document.getElementById('container').offsetWidth * 0.75;
     this.AddResizeListener();
     // this.AnimateLoad();
   },
@@ -69,7 +69,7 @@ export default {
     AddResizeListener() {
       window.addEventListener('resize', () => {
         this.$data.svgWidth =
-          document.getElementById('container').offsetWidth * 0.85;
+          document.getElementById('container').offsetWidth * 0.75;
       });
     }
   },
