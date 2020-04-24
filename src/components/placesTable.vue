@@ -9,13 +9,18 @@
       default-sort-direction="desc"
       detailed
       paginated
-      sort-icon="^"
+      sort-icon="chevron-up"
       per-page="10"
       narrowed
       :mobile-cards="false"
     >
       <template slot-scope="props">
-        <b-table-column field="name" label="Naam" width="300" searchable>
+        <b-table-column
+          field="properties.name"
+          label="Naam"
+          width="300"
+          :searchable="true"
+        >
           {{ props.row.properties.name }}
         </b-table-column>
         <b-table-column
@@ -27,7 +32,7 @@
           {{ props.row.properties.current_popularity }}
         </b-table-column>
         <b-table-column
-          field="usual_popularity"
+          field="properties.avg_p"
           label="Normaal"
           sortable
           width="40"
