@@ -28,21 +28,6 @@
             })
           "
         />
-        <!-- <places-table
-          v-on:selected="setSelectedLocation"
-          :selected-location="selectedLocation"
-          title="Drukker dan normaal rond deze tijd 🐜"
-          sortBy="difference"
-          :data="
-            getTableData({
-              data: filteredData,
-              filterProperty: 'types',
-              filterValue: 'point_of_interest',
-              sortBy: 'difference',
-              numberOfRows: 9999
-            })
-          "
-        /> -->
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
