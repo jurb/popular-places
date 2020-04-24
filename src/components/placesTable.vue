@@ -15,16 +15,16 @@
       :mobile-cards="false"
     >
       <template slot-scope="props">
-        <b-table-column field="name" label="Naam" width="300">
-          {{ props.row.name }}
+        <b-table-column field="name" label="Naam" width="300" searchable>
+          {{ props.row.properties.name }}
         </b-table-column>
         <b-table-column
-          field="current_popularity"
+          field="properties.current_popularity"
           label="Huidig"
           sortable
           width="40"
         >
-          {{ props.row.current_popularity }}
+          {{ props.row.properties.current_popularity }}
         </b-table-column>
         <b-table-column
           field="usual_popularity"
@@ -32,10 +32,10 @@
           sortable
           width="40"
         >
-          {{ props.row.usual_popularity }}
+          {{ props.row.properties.avg_p }}
         </b-table-column>
         <b-table-column field="difference" label="Verschil" sortable width="40">
-          {{ props.row.difference }}
+          {{ props.row.properties.diff_popularity }}
         </b-table-column>
         <!-- <b-table-column field="difference" label="Verschil" sortable width="40">
           {{ props.row.difference }}

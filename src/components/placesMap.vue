@@ -16,36 +16,37 @@
       <l-circle
         v-for="point in data"
         v-bind:key="point.id"
-        :lat-lng="[point.coordinates.lat, point.coordinates.lng]"
-        :radius="popularity2radius(point.current_popularity)"
+        :lat-lng="point.geometry.coordinates.slice().reverse()"
+        :radius="popularity2radius(point.properties.current_popularity)"
         :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
         :opacity="0.5"
       >
-        <l-tooltip>{{ point.name }} </l-tooltip
+        <l-tooltip>{{ point.properties.name }} </l-tooltip
         ><l-popup>
-          {{ point.name }} <br />
-          Adres: {{ point.address.split(',')[0] }} <br />
+          {{ point.properties.name }} <br />
+          Adres: {{ point.properties.address.split(',')[0] }} <br />
 
-          Huidige pop. score: {{ point.current_popularity }} <br />
-          Normale pop. score: {{ point.usual_popularity }} <br />
+          Huidige pop. score: {{ point.properties.current_popularity }} <br />
+          Normale pop. score: {{ point.properties.usual_popularity }} <br />
           Laatst ververst op:
           {{
-            `${new Date(point.scraped_at * 1000).getDate()} ${
-              months[new Date(point.scraped_at * 1000).getMonth()]
-            } ${new Date(point.scraped_at * 1000).getFullYear()}
+            `${new Date(point.properties.scraped_at * 1000).getDate()} ${
+              months[new Date(point.properties.scraped_at * 1000).getMonth()]
+            } ${new Date(point.properties.scraped_at * 1000).getFullYear()}
             ${
-              new Date(point.scraped_at * 1000).getHours() < 10
-                ? '0' + new Date(point.scraped_at * 1000).getHours()
-                : new Date(point.scraped_at * 1000).getHours()
+              new Date(point.properties.scraped_at * 1000).getHours() < 10
+                ? '0' + new Date(point.properties.scraped_at * 1000).getHours()
+                : new Date(point.properties.scraped_at * 1000).getHours()
             }:${
-              new Date(point.scraped_at * 1000).getMinutes() < 10
-                ? '0' + new Date(point.scraped_at * 1000).getMinutes()
-                : new Date(point.scraped_at * 1000).getMinutes()
+              new Date(point.properties.scraped_at * 1000).getMinutes() < 10
+                ? '0' +
+                  new Date(point.properties.scraped_at * 1000).getMinutes()
+                : new Date(point.properties.scraped_at * 1000).getMinutes()
             }`
           }}
           <br />
           <a
-            :href="`https://www.google.com/maps?q=${point.name}`"
+            :href="`https://www.google.com/maps?q=${point.properties.name}`"
             target="_blank"
             s
             >Google Maps</a
@@ -93,7 +94,6 @@ export default {
         'dec'
       ],
       map: {
-        refillData: [],
         zoom: 12,
         center: L.latLng(52.3702, 4.8952),
         url:

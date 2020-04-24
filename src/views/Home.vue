@@ -17,7 +17,7 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Huidige drukte alle plekken 🚨"
-          sortBy="current_popularity"
+          sortBy="properties.current_popularity"
           :data="
             getTableData({
               data: filteredData,
@@ -47,7 +47,7 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Parken 🌳"
-          sortBy="current_popularity"
+          sortBy="properties.current_popularity"
           :data="
             getTableData({
               data: filteredData,
@@ -62,7 +62,7 @@
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
           title="Winkels 🛒"
-          sortBy="current_popularity"
+          sortBy="properties.current_popularity"
           :data="
             getTableData({
               data: filteredData,
@@ -86,7 +86,8 @@
           >
             <b-checkbox v-model="selectedTypes" :native-value="type"
               >{{ type }} ({{
-                filteredData.filter(el => el.types.includes(type)).length
+                filteredData.filter(el => el.properties.types.includes(type))
+                  .length
               }})
             </b-checkbox>
           </div>
@@ -161,7 +162,9 @@ export default {
     },
     getTableData: function(obj) {
       return obj.data
-        .filter(el => el[obj.filterProperty].includes(obj.filterValue))
+        .filter(el =>
+          el.properties[obj.filterProperty].includes(obj.filterValue)
+        )
         .slice()
         .sort((a, b) => b[obj.sortBy] - a[obj.sortBy])
         .slice(0, obj.numberOfRows);
@@ -173,7 +176,7 @@ export default {
   },
   mounted: function() {
     const that = this;
-    d3.json('https://covid19.api.commondatafactory.nl/current', {
+    d3.json('https://covid19.api.commondatafactory.nl/popularplaces', {
       headers: new Headers({
         Authorization: `Basic ${btoa(
           `${process.env.VUE_APP_PLACES_API_USER}:${
@@ -182,8 +185,8 @@ export default {
         )}`
       })
     }).then(function(data) {
-      that.data = data['places'];
-      that.timestamp = new Date(data['timestamp'] * 1000);
+      that.data = data['features'];
+      that.timestamp = new Date(data['scraped_at'] * 1000);
       // console.log(that.timestamp);
       that.selectedTypes = that.typeUniques;
       that.loading = false;
@@ -223,24 +226,15 @@ export default {
       const unwantedTypes = ['point_of_interest', 'establishment'];
       const filterUnwantedTypes = el => !unwantedTypes.includes(el);
       const getUniques = arr => [...new Set(arr)];
-      const types = arr => arr.flatMap(el => el.types);
+      const types = arr => arr.flatMap(el => el.properties.types);
       return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
     filteredData() {
-      return this.data
-        .filter(el =>
-          this.selectedTypes.some(selectedCat => el.types.includes(selectedCat))
+      return this.data.filter(el =>
+        this.selectedTypes.some(selectedCat =>
+          el.properties.types.includes(selectedCat)
         )
-        .map(el => ({
-          ...el,
-          usual_popularity: el.populartimes
-            ? el.populartimes[this.dayNumber].data[this.hour]
-            : null,
-          difference: el.current_popularity
-            ? el.current_popularity -
-              el.populartimes[this.dayNumber].data[this.hour]
-            : null
-        }));
+      );
     }
   }
 };
