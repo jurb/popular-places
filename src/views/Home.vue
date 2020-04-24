@@ -20,7 +20,7 @@
           sortBy="properties.current_popularity"
           :data="
             getTableData({
-              data: filteredData,
+              data: filteredDataInBounds,
               filterProperty: 'types',
               filterValue: 'point_of_interest',
               sortBy: 'current_popularity',
@@ -35,7 +35,7 @@
           sortBy="properties.current_popularity"
           :data="
             getTableData({
-              data: filteredData,
+              data: filteredDataInBounds,
               filterProperty: 'types',
               filterValue: 'park',
               sortBy: 'current_popularity',
@@ -50,7 +50,7 @@
           sortBy="properties.current_popularity"
           :data="
             getTableData({
-              data: filteredData,
+              data: filteredDataInBounds,
               filterProperty: 'types',
               filterValue: 'store',
               sortBy: 'current_popularity',
@@ -101,6 +101,7 @@ export default {
   data() {
     return {
       data: [],
+      dataInBounds: [],
       loading: true,
       selectedTypes: [],
       selectedLocation: {},
@@ -147,7 +148,7 @@ export default {
       this.selectedLocation = value;
     },
     setDataInBounds: function(value) {
-      this.data = value;
+      this.dataInBounds = value;
     },
     getTableData: function(obj) {
       return obj.data
@@ -175,6 +176,7 @@ export default {
       })
     }).then(function(data) {
       that.data = data['features'];
+      that.dataInBounds = data['features'];
       that.timestamp = new Date(data['scraped_at'] * 1000);
       // console.log(that.timestamp);
       that.selectedTypes = that.typeUniques;
@@ -220,6 +222,19 @@ export default {
     },
     filteredData() {
       return this.data
+        .filter(el =>
+          this.selectedTypes.some(selectedCat =>
+            el.properties.types.includes(selectedCat)
+          )
+        )
+        .map(el => ({
+          ...el,
+          diff_current_average:
+            el.properties.current_popularity - el.properties.avg_p
+        }));
+    },
+    filteredDataInBounds() {
+      return this.dataInBounds
         .filter(el =>
           this.selectedTypes.some(selectedCat =>
             el.properties.types.includes(selectedCat)

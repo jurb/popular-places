@@ -96,7 +96,7 @@ export default {
         'dec'
       ],
       map: {
-        zoom: 12,
+        zoom: 11,
         center: L.latLng(52.3702, 4.8952),
         url:
           'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
