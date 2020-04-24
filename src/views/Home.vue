@@ -215,11 +215,17 @@ export default {
       return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
     filteredData() {
-      return this.data.filter(el =>
-        this.selectedTypes.some(selectedCat =>
-          el.properties.types.includes(selectedCat)
+      return this.data
+        .filter(el =>
+          this.selectedTypes.some(selectedCat =>
+            el.properties.types.includes(selectedCat)
+          )
         )
-      );
+        .map(el => ({
+          ...el,
+          diff_current_average:
+            el.properties.current_popularity - el.properties.avg_p
+        }));
     }
   }
 };

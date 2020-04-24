@@ -29,6 +29,11 @@
           sortable
           width="40"
         >
+          <template slot="header" slot-scope="{ column }">
+            <b-tooltip label="Op dit uur gemeten score" dashed>
+              {{ column.label }}
+            </b-tooltip>
+          </template>
           {{ props.row.properties.current_popularity }}
         </b-table-column>
         <b-table-column
@@ -37,10 +42,23 @@
           sortable
           width="40"
         >
+          <template slot="header" slot-scope="{ column }">
+            <b-tooltip
+              label="Gemiddeld gemeten drukte op deze tijd en dag"
+              dashed
+            >
+              {{ column.label }}
+            </b-tooltip>
+          </template>
           {{ props.row.properties.avg_p }}
         </b-table-column>
-        <b-table-column field="difference" label="Verschil" sortable width="40">
-          {{ props.row.properties.diff_popularity }}
+        <b-table-column
+          field="diff_current_average"
+          label="Verschil"
+          sortable
+          width="40"
+        >
+          {{ props.row.diff_current_average }}
         </b-table-column>
         <!-- <b-table-column field="difference" label="Verschil" sortable width="40">
           {{ props.row.difference }}
