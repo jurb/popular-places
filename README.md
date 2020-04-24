@@ -7,7 +7,7 @@ The api uses basic auth, set the user and pass in these variables in your .env a
 VUE_APP_PLACES_API_USER
 VUE_APP_PLACES_API_PASS
 
-The frontend also uses Firebase auth for authentication (no database is used). To use your own auth solution, replace the Firebase implementation and the routes in the Vue instance in in main.js.
+The frontend also uses Firebase auth for authentication (no database is used). Adjust the Firebase implementation with your own account credentials by modifying main.js and firebaseConfig.js, or use your own auth solution.
 
 
 ## Project setup
