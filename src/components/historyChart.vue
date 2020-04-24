@@ -58,11 +58,9 @@ export default {
   mounted() {
     this.svgWidth = document.getElementById('container').offsetWidth * 0.75;
     this.AddResizeListener();
-    // this.AnimateLoad();
   },
   data: () => ({
     svgWidth: 0,
-    redrawToggle: true,
     ticks: [3, 6, 9, 12, 15, 18, 21]
   }),
   methods: {
