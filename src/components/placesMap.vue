@@ -5,6 +5,8 @@
       :zoom="map.zoom"
       :center="map.center"
       :options="{ preferCanvas: true }"
+      ref="map"
+      @update:bounds="boundsUpdated"
     >
       <l-control position="bottomright">
         <button class="button" @click="scrollToTop">^</button>
@@ -27,7 +29,7 @@
           Adres: {{ point.properties.address.split(',')[0] }} <br />
 
           Huidige pop. score: {{ point.properties.current_popularity }} <br />
-          Normale pop. score: {{ point.properties.usual_popularity }} <br />
+          Normale pop. score: {{ point.properties.avg_p }} <br />
           Laatst ververst op:
           {{
             `${new Date(point.properties.scraped_at * 1000).getDate()} ${
@@ -100,6 +102,7 @@ export default {
           'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
         attribution: 'CC-BY-4.0 Gemeente Amsterdam'
       },
+      bounds: null,
       localData: this.data
     };
   },
@@ -118,6 +121,16 @@ export default {
   methods: {
     scrollToTop() {
       window.scrollTo(0, 0);
+    },
+    boundsUpdated() {
+      const dataInBounds = this.data.filter(el =>
+        this.$refs.map.mapObject
+          .getBounds()
+          .contains(
+            L.latLng(el.geometry.coordinates[1], el.geometry.coordinates[0])
+          )
+      );
+      this.$emit('data-in-bounds', dataInBounds);
     }
   },
   computed: {

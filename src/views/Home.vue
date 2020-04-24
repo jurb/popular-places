@@ -80,6 +80,7 @@
       </div>
       <div class="column ">
         <places-map
+          v-on:data-in-bounds="setDataInBounds"
           :data="filteredData"
           :selected-location="selectedLocation"
         />
@@ -144,6 +145,9 @@ export default {
     },
     setSelectedLocation: function(value) {
       this.selectedLocation = value;
+    },
+    setDataInBounds: function(value) {
+      this.data = value;
     },
     getTableData: function(obj) {
       return obj.data
