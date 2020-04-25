@@ -16,7 +16,7 @@
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Huidige drukte plekken in beeld 🗺"
+          title="Drukte plekken in beeld op kaart 🗺"
           sortBy="properties.current_popularity"
           :data="
             getTableData({
@@ -31,11 +31,11 @@
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Parken 🌳"
+          title="Drukte parken 🌳"
           sortBy="properties.current_popularity"
           :data="
             getTableData({
-              data: filteredDataInBounds,
+              data: filteredData,
               filterProperty: 'types',
               filterValue: 'park',
               sortBy: 'current_popularity',
@@ -46,11 +46,11 @@
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Winkels 🛒"
+          title="Drukte winkels 🛒"
           sortBy="properties.current_popularity"
           :data="
             getTableData({
-              data: filteredDataInBounds,
+              data: filteredData,
               filterProperty: 'types',
               filterValue: 'store',
               sortBy: 'current_popularity',
