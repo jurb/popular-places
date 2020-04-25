@@ -16,7 +16,7 @@
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
-          title="Huidige drukte alle plekken 🚨"
+          title="Huidige drukte plekken in beeld 🗺"
           sortBy="properties.current_popularity"
           :data="
             getTableData({
