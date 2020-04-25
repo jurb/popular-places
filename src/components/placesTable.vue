@@ -30,7 +30,11 @@
           width="40"
         >
           <template slot="header" slot-scope="{ column }">
-            <b-tooltip label="Op dit uur gemeten score" dashed>
+            <b-tooltip
+              label="Op dit uur gemeten score"
+              position="is-bottom"
+              dashed
+            >
               {{ column.label }}
             </b-tooltip>
           </template>
@@ -44,7 +48,8 @@
         >
           <template slot="header" slot-scope="{ column }">
             <b-tooltip
-              label="Gemiddeld gemeten drukte op deze tijd en dag"
+              label="Gemiddelde drukte op deze tijd en dag"
+              position="is-bottom"
               dashed
             >
               {{ column.label }}
