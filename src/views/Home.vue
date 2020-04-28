@@ -13,6 +13,21 @@
           >
           | <a @click="logOut">Log uit</a>
         </p>
+        <p>
+          <b-field label="Data ververst op">
+            <b-datetimepicker
+              v-model="selectedDatetime"
+              placeholder="Select a date"
+              icon="calendar-today"
+              :timepicker="{
+                incrementMinutes: 15,
+                inline: true,
+                'unselectable-times': [new Date()]
+              }"
+            >
+            </b-datetimepicker>
+          </b-field>
+        </p>
         <places-table
           v-on:selected="setSelectedLocation"
           :selected-location="selectedLocation"
@@ -103,6 +118,7 @@ export default {
       data: [],
       dataInBounds: [],
       loading: true,
+      selectedDatetime: null,
       selectedTypes: [],
       selectedLocation: {},
       typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],

@@ -1,19 +1,20 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
-import Auth from "./components/Auth.vue";
+import Vue from 'vue';
+import Router from 'vue-router';
+
+const Home = () => import(/* webpackChunkName: "home" */ './views/Home.vue');
+const Auth = () => import(/* webpackChunkName: "auth" */ './views/Auth.vue');
 
 Vue.use(Router);
 
 export default new Router({
-  mode: "history",
+  mode: 'history',
   routes: [
     {
-      path: "/places",
-      name: "home",
+      path: '/places',
+      name: 'home',
       component: Home
     },
-    { path: "/auth", component: Auth }
+    { path: '/auth', component: Auth }
 
     // ,
     // {

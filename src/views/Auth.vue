@@ -22,16 +22,16 @@
 </template>
 
 <script>
-import firebase from "firebase/app";
-import "firebase/auth";
-import { config } from "../helpers/firebaseConfig";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { config } from '../helpers/firebaseConfig';
 export default {
-  name: "auth",
+  name: 'auth',
   data() {
     return {
       loginForm: {
-        email: "",
-        password: ""
+        email: '',
+        password: ''
       }
     };
   },
@@ -55,5 +55,5 @@ export default {
 
 <style lang="css">
 section {width: 400px; padding: 2rem;}
-.button {font-family: 'Avenir LT W01 85 Heavy'; padding: 2rem}
+.button {font-family: 'Avenir LT W01 85 Heavy'; margin:.4rem}
 </style>
