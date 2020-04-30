@@ -1,11 +1,10 @@
 <template>
-  <div class="home" v-if="!loading">
+  <div class="home" v-if="render">
     <div class="columns">
       <div class="column is-half is-narrow selection-pane">
         <!-- <history-chart :data="data" /> -->
         <p class="top-info">
-          Data ververst op {{ prettyDate }} <br />
-          <a @click="reloadPage">Ververs pagina</a> |
+          <a @click="setData">Nieuwste data</a> |
           <a
             href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
             target="_blank"
@@ -14,19 +13,24 @@
           | <a @click="logOut">Log uit</a>
         </p>
         <p>
-          <b-field label="Data ververst op">
-            <b-datetimepicker
-              v-model="selectedDatetime"
-              placeholder="Select a date"
-              icon="calendar-today"
-              :timepicker="{
-                incrementMinutes: 15,
-                inline: true,
-                'unselectable-times': [new Date()]
-              }"
-            >
-            </b-datetimepicker>
-          </b-field>
+          Data ververst op {{ prettyDate }} <br />
+          <b-button
+            @click="
+              initialLoad = false;
+              setData(timestamp - 3600000);
+            "
+            size=""
+            icon-right="chevron-left"
+            :loading="loading"
+          ></b-button
+          ><span class="is-size-4"> {{ prettyHour }}:{{ prettyMinute }} </span>
+          <b-button
+            v-if="!initialLoad"
+            @click="setData(timestamp + 3600000)"
+            size=""
+            icon-right="chevron-right"
+            :loading="loading"
+          ></b-button>
         </p>
         <places-table
           v-on:selected="setSelectedLocation"
@@ -117,10 +121,12 @@ export default {
     return {
       data: [],
       dataInBounds: [],
+      render: false,
       loading: true,
       selectedDatetime: null,
       selectedTypes: [],
       selectedLocation: {},
+      initialLoad: true,
       typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
       daysOfWeek: [
         'zondag',
@@ -145,7 +151,8 @@ export default {
         'nov',
         'dec'
       ],
-      timestamp: ''
+      timestamp: '',
+      date: ''
     };
   },
   components: {
@@ -154,6 +161,35 @@ export default {
   },
   watch: {},
   methods: {
+    setData: function(timestamp = +new Date()) {
+      const that = this;
+      that.loading = true;
+      d3.json(
+        `https://covid19.api.commondatafactory.nl/popularplaces?timestamp=${Math.floor(
+          timestamp / 1000
+        )}`,
+        {
+          headers: new Headers({
+            Authorization: `Basic ${btoa(
+              `${process.env.VUE_APP_PLACES_API_USER}:${
+                process.env.VUE_APP_PLACES_API_PASS
+              }`
+            )}`
+          })
+        }
+      ).then(function(data) {
+        that.data = data['features'];
+        that.dataInBounds = data['features'];
+        that.date = new Date(data['scraped_at'] * 1000);
+        that.timestamp / 1000 === data['scraped_at']
+          ? (that.initialLoad = true)
+          : '';
+        that.timestamp = data['scraped_at'] * 1000;
+        that.selectedTypes = that.typeUniques;
+        that.render = true;
+        that.loading = false;
+      });
+    },
     logOut() {
       firebase.auth().signOut();
     },
@@ -161,6 +197,7 @@ export default {
       window.location.assign('/');
     },
     setSelectedLocation: function(value) {
+      console.log(this.$route.query.test);
       this.selectedLocation = value;
     },
     setDataInBounds: function(value) {
@@ -171,7 +208,7 @@ export default {
         .filter(el =>
           el.properties[obj.filterProperty].includes(obj.filterValue)
         )
-        .slice()
+        .slice() // don't mutate original array
         .sort((a, b) => b[obj.sortBy] - a[obj.sortBy])
         .slice(0, obj.numberOfRows);
     }
@@ -181,53 +218,35 @@ export default {
     // this.selectedTypes = ["supermarket"];
   },
   mounted: function() {
-    const that = this;
-    d3.json('https://covid19.api.commondatafactory.nl/popularplaces', {
-      headers: new Headers({
-        Authorization: `Basic ${btoa(
-          `${process.env.VUE_APP_PLACES_API_USER}:${
-            process.env.VUE_APP_PLACES_API_PASS
-          }`
-        )}`
-      })
-    }).then(function(data) {
-      that.data = data['features'];
-      that.dataInBounds = data['features'];
-      that.timestamp = new Date(data['scraped_at'] * 1000);
-      // console.log(that.timestamp);
-      that.selectedTypes = that.typeUniques;
-      that.loading = false;
-    });
+    this.setData();
   },
   computed: {
     // set first day of the week to monday
     dayNumber: function() {
-      return this.timestamp.getDay() - 1 === -1
-        ? 6
-        : this.timestamp.getDay() - 1;
+      return this.date.getDay() - 1 === -1 ? 6 : this.date.getDay() - 1;
     },
     hour: function() {
-      return this.timestamp.getHours();
+      return this.date.getHours();
     },
     prettyHour: function() {
-      return this.timestamp.getHours() < 10
-        ? '0' + this.timestamp.getHours()
-        : this.timestamp.getHours();
+      return this.date.getHours() < 10
+        ? '0' + this.date.getHours()
+        : this.date.getHours();
     },
     minute: function() {
-      return this.timestamp.getMinutes();
+      return this.date.getMinutes();
     },
     prettyMinute: function() {
-      return this.timestamp.getMinutes() < 10
-        ? '0' + this.timestamp.getMinutes()
-        : this.timestamp.getMinutes();
+      return this.date.getMinutes() < 10
+        ? '0' + this.date.getMinutes()
+        : this.date.getMinutes();
     },
     prettyDate: function() {
       return `${[
-        this.daysOfWeek[this.timestamp.getDay()],
-        this.timestamp.getDate(),
-        this.months[this.timestamp.getMonth()]
-      ].join(' ')} ${this.prettyHour}:${this.prettyMinute}`;
+        this.daysOfWeek[this.date.getDay()],
+        this.date.getDate(),
+        this.months[this.date.getMonth()]
+      ].join(' ')}`;
     },
     typeUniques() {
       const unwantedTypes = ['point_of_interest', 'establishment'];
