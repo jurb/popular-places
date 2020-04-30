@@ -177,18 +177,22 @@ export default {
             )}`
           })
         }
-      ).then(function(data) {
-        that.data = data['features'];
-        that.dataInBounds = data['features'];
-        that.date = new Date(data['scraped_at'] * 1000);
-        that.timestamp / 1000 === data['scraped_at']
-          ? (that.initialLoad = true)
-          : '';
-        that.timestamp = data['scraped_at'] * 1000;
-        that.selectedTypes = that.typeUniques;
-        that.render = true;
-        that.loading = false;
-      });
+      )
+        .then(function(data) {
+          that.data = data['features'];
+          that.dataInBounds = data['features'];
+          that.date = new Date(data['scraped_at'] * 1000);
+          that.timestamp / 1000 === data['scraped_at']
+            ? (that.initialLoad = true)
+            : '';
+          that.timestamp = data['scraped_at'] * 1000;
+          that.selectedTypes = that.typeUniques;
+          that.render = true;
+          that.loading = false;
+        })
+        .catch(function(error) {
+          that.setData(timestamp - 3600000);
+        });
     },
     logOut() {
       firebase.auth().signOut();
