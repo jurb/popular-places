@@ -4,7 +4,14 @@
       <div class="column is-half is-narrow selection-pane">
         <!-- <history-chart :data="data" /> -->
         <p class="top-info">
-          <a @click="setData()">Nieuwste data</a> |
+          <a
+            @click="
+              initialTimestamp = +new Date();
+              setData(+new Date());
+            "
+            >Nieuwste data</a
+          >
+          |
           <a
             href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
             target="_blank"
@@ -15,37 +22,23 @@
         <p>
           Data rond {{ prettyDate }} <br />
           <b-button
-            @click="
-              initialLoad = false;
-              setData(timestamp - 3600000, 'left');
-            "
+            @click="setData(timestamp - 3600000, 'left')"
             size=""
             icon-right="chevron-left"
             :loading="loading"
           ></b-button
           ><span class="is-size-4"> {{ prettyHour }}:{{ prettyMinute }} </span>
           <b-button
-            v-if="!initialLoad"
+            v-if="
+              Math.floor(timestamp / 1000) !==
+                Math.floor(initialTimestamp / 1000)
+            "
             @click="setData(timestamp + 3600000, 'right')"
             size=""
             icon-right="chevron-right"
             :loading="loading"
           ></b-button>
           <!-- {{ timestamp }} -->
-        </p>
-        <p>
-          api call :
-          <a
-            :href="
-              `https://covid19.api.commondatafactory.nl/popularplaces?timestamp=${Math.floor(
-                timestamp / 1000
-              )}`
-            "
-          >
-            {{ `${Math.floor(timestamp / 1000)}` }}</a
-          ><br />
-          timestamp in data: {{ `${Math.floor(timestamp / 1000)}` }}<br />
-          timestamp in json: {{ `${Math.floor(json.scraped_at)}` }}
         </p>
         <places-table
           v-on:selected="setSelectedLocation"
@@ -167,7 +160,8 @@ export default {
         'nov',
         'dec'
       ],
-      timestamp: '',
+      initialTimestamp: +new Date(),
+      timestamp: +new Date(),
       date: ''
     };
   },
@@ -208,15 +202,11 @@ export default {
           that.loading = false;
         })
         .catch(function(error) {
-          console.log(
-            `https://covid19.api.commondatafactory.nl/popularplaces?timestamp=${Math.floor(
-              (timestamp - 3600000) / 1000
-            )}`
-          );
-          console.log(direction);
           direction === 'left'
             ? that.setData(timestamp - 3600000, 'left')
-            : that.setData(timestamp + 3600000, 'right');
+            : direction === 'right'
+            ? that.setData(timestamp + 3600000, 'right')
+            : that.setData(+new Date());
         });
     },
     logOut() {
