@@ -203,9 +203,13 @@ export default {
         }
       )
         .then(function(data) {
+          const enrichedData = data['features'].map(el => ({
+            ...el,
+            group: that.groups.filter(d => d.id === el.id).map(dd => dd.group)
+          }));
           that.json = data;
-          that.data = data['features'];
-          that.dataInBounds = data['features'];
+          that.data = enrichedData;
+          that.dataInBounds = enrichedData;
           that.date = new Date(timestamp);
           that.timestamp = timestamp;
           that.selectedTypes = that.typeUniques;
