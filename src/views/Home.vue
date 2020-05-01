@@ -145,6 +145,7 @@ export default {
       selectedLocation: {},
       initialLoad: true,
       errorCount: 0,
+      groups: [],
       typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
       daysOfWeek: [
         'zondag',
@@ -241,11 +242,12 @@ export default {
         .slice(0, obj.numberOfRows);
     }
   },
-  created: function() {
-    this.selectedTypes = this.typeUniques;
-    // this.selectedTypes = ["supermarket"];
-  },
   mounted: function() {
+    const that = this;
+    this.selectedTypes = this.typeUniques;
+    d3.tsv('data/groups.tsv').then(function(data) {
+      that.groups = data;
+    });
     this.setData();
   },
   computed: {
