@@ -1,116 +1,124 @@
 <template>
-  <div class="home" v-if="render">
-    <div class="columns">
-      <div class="column is-half is-narrow selection-pane">
-        <!-- <history-chart :data="data" /> -->
-        <p class="top-info">
-          <a
-            @click="
-              initialTimestamp = +new Date();
-              setData(+new Date());
-            "
-            >Nieuwste data</a
-          >
-          |
-          <a
-            href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
-            target="_blank"
-            >Over deze kaart</a
-          >
-          | <a @click="logOut">Log uit</a>
-        </p>
-        <p>
-          Data rond {{ prettyDate }} <br />
-          <b-button
-            @click="setData(timestamp - 3600000, 'left')"
-            size=""
-            icon-right="chevron-left"
-            :loading="loading"
-          ></b-button
-          ><span class="is-size-4"> {{ prettyHour }}:{{ prettyMinute }} </span>
-          <b-button
-            v-if="
-              Math.floor(timestamp / 1000) !==
-                Math.floor(initialTimestamp / 1000)
-            "
-            @click="setData(timestamp + 3600000, 'right')"
-            size=""
-            icon-right="chevron-right"
-            :loading="loading"
-          ></b-button>
-          <!-- {{ timestamp }} -->
-        </p>
-        <places-table
-          v-on:selected="setSelectedLocation"
-          :selected-location="selectedLocation"
-          title="Drukte plekken in beeld op kaart 🗺"
-          sortBy="properties.current_popularity"
-          :data="
-            getTableData({
-              data: filteredDataInBounds,
-              filterProperty: 'types',
-              filterValue: 'point_of_interest',
-              sortBy: 'current_popularity',
-              numberOfRows: 9999
-            })
-          "
-        />
-        <places-table
-          v-on:selected="setSelectedLocation"
-          :selected-location="selectedLocation"
-          title="Drukte parken 🌳"
-          sortBy="properties.current_popularity"
-          :data="
-            getTableData({
-              data: filteredData,
-              filterProperty: 'types',
-              filterValue: 'park',
-              sortBy: 'current_popularity',
-              numberOfRows: 9999
-            })
-          "
-        />
-        <places-table
-          v-on:selected="setSelectedLocation"
-          :selected-location="selectedLocation"
-          title="Drukte winkels 🛒"
-          sortBy="properties.current_popularity"
-          :data="
-            getTableData({
-              data: filteredData,
-              filterProperty: 'types',
-              filterValue: 'store',
-              sortBy: 'current_popularity',
-              numberOfRows: 9999
-            })
-          "
-        />
-        <div class="field">
-          <h2>Categorieën ({{ filteredData.length }} items)</h2>
-          <p class="selectors">
-            <a @click="selectedTypes = typeUniques">Selecteer alles</a> |
-            <a @click="selectedTypes = []">Deselecteer alles</a>
+  <div>
+    <p v-if="errorCount > 24">
+      The places API seems to be down. Please
+      <a @click="reloadPage">reload the page</a> to try again.
+    </p>
+    <div class="home" v-if="render">
+      <div class="columns">
+        <div class="column is-half is-narrow selection-pane">
+          <!-- <history-chart :data="data" /> -->
+          <p class="top-info">
+            <a
+              @click="
+                initialTimestamp = +new Date();
+                setData(+new Date());
+              "
+              >Nieuwste data</a
+            >
+            |
+            <a
+              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+              target="_blank"
+              >Over deze kaart</a
+            >
+            | <a @click="logOut">Log uit</a>
           </p>
-          <div
-            v-for="type in typeUniques"
-            v-bind:key="type.id"
-            class="checkbox-wrapper"
-          >
-            <b-checkbox v-model="selectedTypes" :native-value="type"
-              >{{ type }} ({{
-                filteredData.filter(el => el.properties.types.includes(type))
-                  .length
-              }})
-            </b-checkbox>
+          <p>
+            Data rond {{ prettyDate }} <br />
+            <b-button
+              @click="setData(timestamp - 3600000, 'left')"
+              size=""
+              icon-right="chevron-left"
+              :loading="loading"
+            ></b-button
+            ><span class="is-size-4">
+              {{ prettyHour }}:{{ prettyMinute }}
+            </span>
+            <b-button
+              v-if="
+                Math.floor(timestamp / 1000) !==
+                  Math.floor(initialTimestamp / 1000)
+              "
+              @click="setData(timestamp + 3600000, 'right')"
+              size=""
+              icon-right="chevron-right"
+              :loading="loading"
+            ></b-button>
+            <!-- {{ timestamp }} -->
+          </p>
+          <places-table
+            v-on:selected="setSelectedLocation"
+            :selected-location="selectedLocation"
+            title="Drukte plekken in beeld op kaart 🗺"
+            sortBy="properties.current_popularity"
+            :data="
+              getTableData({
+                data: filteredDataInBounds,
+                filterProperty: 'types',
+                filterValue: 'point_of_interest',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              })
+            "
+          />
+          <places-table
+            v-on:selected="setSelectedLocation"
+            :selected-location="selectedLocation"
+            title="Drukte parken 🌳"
+            sortBy="properties.current_popularity"
+            :data="
+              getTableData({
+                data: filteredData,
+                filterProperty: 'types',
+                filterValue: 'park',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              })
+            "
+          />
+          <places-table
+            v-on:selected="setSelectedLocation"
+            :selected-location="selectedLocation"
+            title="Drukte winkels 🛒"
+            sortBy="properties.current_popularity"
+            :data="
+              getTableData({
+                data: filteredData,
+                filterProperty: 'types',
+                filterValue: 'store',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              })
+            "
+          />
+          <div class="field">
+            <h2>Categorieën ({{ filteredData.length }} items)</h2>
+            <p class="selectors">
+              <a @click="selectedTypes = typeUniques">Selecteer alles</a> |
+              <a @click="selectedTypes = []">Deselecteer alles</a>
+            </p>
+            <div
+              v-for="type in typeUniques"
+              v-bind:key="type.id"
+              class="checkbox-wrapper"
+            >
+              <b-checkbox v-model="selectedTypes" :native-value="type"
+                >{{ type }} ({{
+                  filteredData.filter(el => el.properties.types.includes(type))
+                    .length
+                }})
+              </b-checkbox>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="column ">
-        <places-map
-          v-on:data-in-bounds="setDataInBounds"
-          :data="filteredData"
-          :selected-location="selectedLocation"
-        />
+        <div class="column ">
+          <places-map
+            v-on:data-in-bounds="setDataInBounds"
+            :data="filteredData"
+            :selected-location="selectedLocation"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -136,6 +144,7 @@ export default {
       selectedTypes: [],
       selectedLocation: {},
       initialLoad: true,
+      errorCount: 0,
       typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
       daysOfWeek: [
         'zondag',
@@ -193,20 +202,17 @@ export default {
           that.data = data['features'];
           that.dataInBounds = data['features'];
           that.date = new Date(timestamp);
-          // that.timestamp / 1000 === data['scraped_at']
-          //   ? (that.initialLoad = true)
-          //   : '';
           that.timestamp = timestamp;
           that.selectedTypes = that.typeUniques;
           that.render = true;
           that.loading = false;
+          that.errorCount = 0;
         })
         .catch(function(error) {
-          direction === 'left'
-            ? that.setData(timestamp - 3600000, 'left')
-            : direction === 'right'
-            ? that.setData(timestamp + 3600000, 'right')
-            : that.setData(+new Date());
+          ++that.errorCount;
+          if (that.errorCount > 24) {
+            return;
+          } else direction === 'left' ? that.setData(timestamp - 3600000, 'left') : direction === 'right' ? that.setData(timestamp + 3600000, 'right') : that.setData(+new Date());
         });
     },
     logOut() {
