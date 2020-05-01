@@ -20,7 +20,14 @@
         v-bind:key="point.id"
         :lat-lng="point.geometry.coordinates.slice().reverse()"
         :radius="popularity2radius(point.properties.current_popularity)"
-        :color="point.id === selectedLocation.id ? '#f03' : 'blue'"
+        :color="
+          (Array.isArray(selectedLocation.id)
+            ? selectedLocation.id
+            : [selectedLocation.id]
+          ).includes(point.id)
+            ? '#f03'
+            : 'blue'
+        "
         :opacity="0.5"
       >
         <l-tooltip>{{ point.properties.name }} </l-tooltip
@@ -135,8 +142,6 @@ export default {
   },
   computed: {
     popularity2radius: function() {
-      // console.log([0, d3.max(this.localData, d => d.current_popularity)]);
-      // console.log(d3.extent(this.localData, d => d.difference));
       return (
         d3
           .scaleSqrt()
