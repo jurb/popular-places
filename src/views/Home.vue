@@ -231,7 +231,6 @@ export default {
       window.location.assign('/');
     },
     setSelectedLocation: function(value) {
-      console.log(this.$route.query.test);
       this.selectedLocation = value;
     },
     setDataInBounds: function(value) {
