@@ -215,7 +215,7 @@ export default {
           ++that.errorCount;
           if (that.errorCount > 24) {
             return;
-          } else direction === 'left' ? that.setData(timestamp - 3600000, 'left') : direction === 'right' ? that.setData(timestamp + 3600000, 'right') : that.setData(+new Date());
+          } else direction === 'left' ? that.setData(timestamp - 3600000, 'left') : direction === 'right' ? that.setData(timestamp + 3600000, 'right') : that.setData(timestamp - 3600000, 'left');
         });
     },
     logOut() {
