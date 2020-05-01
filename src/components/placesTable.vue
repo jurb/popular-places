@@ -11,7 +11,6 @@
       paginated
       sort-icon="chevron-up"
       per-page="10"
-      narrowed
       :mobile-cards="false"
     >
       <template slot-scope="props">
