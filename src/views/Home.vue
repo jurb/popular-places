@@ -128,6 +128,7 @@
 import placesTable from '@/components/placesTable.vue';
 import placesMap from '@/components/placesMap.vue';
 import * as d3 from 'd3';
+import { rollup, group, merge } from 'd3-array';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -310,6 +311,35 @@ export default {
           diff_current_average:
             el.properties.current_popularity - el.properties.avg_p
         }));
+    },
+    groupsData() {
+      // return Array.from(group(this.groups, el => el.group));
+      return Array.from(group(this.groups, el => el.group))
+        .map(el => ({
+          group: el[0],
+          places: this.filteredData.filter(d =>
+            el[1].map(el => el.id).includes(d.id)
+          )
+        }))
+        .filter(el => el.places.length > 0)
+        .map(el => ({
+          ...el,
+          avg_current_popularity: Math.floor(
+            d3.mean(el.places.map(d => d.properties.current_popularity))
+          ),
+          avg_avg_p: Math.floor(d3.mean(el.places.map(d => d.properties.avg_p)))
+        }))
+        .map(el => ({
+          ...el,
+          diff_current_average: el.avg_avg_p
+            ? el.avg_current_popularity - el.avg_avg_p
+            : null,
+          id: el.places.map(el => el.id)
+        }));
+
+      // return Array.from(
+      //   group(this.data.filter(d => d.group.length > 0), el => el.group)
+      // ).map(el => ({ group: el[0], places: el[1] }));
     }
   }
 };
