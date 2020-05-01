@@ -47,6 +47,7 @@
             ></b-button>
           </p>
           <group-table
+            v-if="groupsData.length > 0"
             :data="groupsData"
             title="Samengestelde plekken"
             v-on:selected="setSelectedLocation"
@@ -65,6 +66,15 @@
                 numberOfRows: 9999
               })
             "
+            v-if="
+              getTableData({
+                data: filteredDataInBounds,
+                filterProperty: 'types',
+                filterValue: 'point_of_interest',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              }).length > 0
+            "
           />
           <places-table
             v-on:selected="setSelectedLocation"
@@ -80,6 +90,15 @@
                 numberOfRows: 9999
               })
             "
+            v-if="
+              getTableData({
+                data: filteredData,
+                filterProperty: 'types',
+                filterValue: 'park',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              }).length > 0
+            "
           />
           <places-table
             v-on:selected="setSelectedLocation"
@@ -94,6 +113,15 @@
                 sortBy: 'current_popularity',
                 numberOfRows: 9999
               })
+            "
+            v-if="
+              getTableData({
+                data: filteredData,
+                filterProperty: 'types',
+                filterValue: 'store',
+                sortBy: 'current_popularity',
+                numberOfRows: 9999
+              }).length > 0
             "
           />
           <div class="field">
