@@ -180,6 +180,9 @@ export default {
   },
   watch: {},
   methods: {
+    getInitialTimestamp: function() {
+      // TODO: get timestamp from first api call instead of local system
+    },
     setData: function(timestamp = +new Date(), direction = 'none') {
       const that = this;
       that.loading = true;
