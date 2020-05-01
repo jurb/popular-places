@@ -11,7 +11,6 @@
 
 <script>
 import * as d3 from 'd3';
-import { rollup, group, merge } from 'd3-array';
 import historyChart from '@/components/historyChart.vue';
 
 export default {
@@ -35,6 +34,7 @@ export default {
     });
   },
   computed: {
+    // TODO: show the right hour when stepping through time
     currentMeasurement: function() {
       const timestamp = () => d3.max(this.data['measurements'], d => d[0]);
       const date = () => new Date(timestamp() * 1000);
