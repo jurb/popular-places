@@ -45,8 +45,12 @@
               icon-right="chevron-right"
               :loading="loading"
             ></b-button>
-            <!-- {{ timestamp }} -->
           </p>
+          <group-table
+            :data="groupsData"
+            title="Samengestelde plekken"
+            v-on:selected="setSelectedLocation"
+          />
           <places-table
             v-on:selected="setSelectedLocation"
             :selected-location="selectedLocation"
@@ -126,6 +130,7 @@
 
 <script>
 import placesTable from '@/components/placesTable.vue';
+import groupTable from '@/components/groupTable.vue';
 import placesMap from '@/components/placesMap.vue';
 import * as d3 from 'd3';
 import { rollup, group, merge } from 'd3-array';
@@ -178,6 +183,7 @@ export default {
   },
   components: {
     placesTable,
+    groupTable,
     placesMap
   },
   watch: {},
