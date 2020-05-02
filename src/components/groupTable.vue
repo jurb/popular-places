@@ -1,6 +1,14 @@
 <template>
   <div>
-    <h2>{{ title }}</h2>
+    <h2>
+      <b-tooltip
+        label="Deze locaties zijn op verzoek van THOR samengesteld"
+        position="is-right"
+        dashed
+      >
+        {{ title }}
+      </b-tooltip>
+    </h2>
     <b-table
       :data="data"
       v-if="data.length"
