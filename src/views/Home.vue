@@ -46,11 +46,25 @@
               :loading="loading"
             ></b-button>
           </p>
+          <h2>Categorieën ({{ filteredData.length }} items)</h2>
+          <b-field style="margin-left: 0.6rem;" grouped group-multiline>
+            <b-checkbox-button
+              v-for="type in combinedTypeUniques"
+              v-bind:key="type.id"
+              v-model="selectedTypes"
+              :native-value="type"
+              >{{ type }} ({{
+                filteredData.filter(el => el.combinedType.includes(type))
+                  .length
+              }})
+            </b-checkbox-button></b-field
+          >
           <group-table
             v-if="groupsData.length > 0"
             :data="groupsData"
             title="Hotspots ⚠️"
             v-on:selected="setSelectedLocation"
+            :selected-location="selectedLocation"
           />
           <places-table
             v-on:selected="setSelectedLocation"
@@ -124,25 +138,6 @@
               }).length > 0
             "
           />
-          <div class="field">
-            <h2>Categorieën ({{ filteredData.length }} items)</h2>
-            <p class="selectors">
-              <a @click="selectedTypes = typeUniques">Selecteer alles</a> |
-              <a @click="selectedTypes = []">Deselecteer alles</a>
-            </p>
-            <div
-              v-for="type in typeUniques"
-              v-bind:key="type.id"
-              class="checkbox-wrapper"
-            >
-              <b-checkbox v-model="selectedTypes" :native-value="type"
-                >{{ type }} ({{
-                  filteredData.filter(el => el.properties.types.includes(type))
-                    .length
-                }})
-              </b-checkbox>
-            </div>
-          </div>
         </div>
         <div class="column ">
           <places-map
@@ -176,11 +171,12 @@ export default {
       loading: true,
       selectedDatetime: null,
       selectedTypes: [],
+      selectedCombinedTypes: [],
       selectedLocation: {},
       initialLoad: true,
       errorCount: 0,
       groups: [],
-      typesOfInterest: ['park', 'store', 'hardware_store', 'supermarket'],
+      combinedTypes: [],
       daysOfWeek: [
         'zondag',
         'maandag',
@@ -237,16 +233,11 @@ export default {
         }
       )
         .then(function(data) {
-          const enrichedData = data['features'].map(el => ({
-            ...el,
-            group: that.groups.filter(d => d.id === el.id).map(dd => dd.group)
-          }));
-          that.json = data;
-          that.data = enrichedData;
-          that.dataInBounds = enrichedData;
-          that.date = new Date(timestamp);
+          that.dataInBounds = that.data = data['features'];
           that.timestamp = timestamp;
-          that.selectedTypes = that.typeUniques;
+          that.date = new Date(timestamp);
+          // load unique types in selectedTypes filter array on first load
+          !that.render ? (that.selectedTypes = that.combinedTypeUniques) : '';
           that.render = true;
           that.loading = false;
           that.errorCount = 0;
@@ -278,13 +269,40 @@ export default {
         .slice() // don't mutate original array
         .sort((a, b) => b[obj.sortBy] - a[obj.sortBy])
         .slice(0, obj.numberOfRows);
+    },
+    filterData: function(data) {
+      return (
+        data
+          .map(el => ({
+            ...el,
+            diff_current_average:
+              el.properties.current_popularity - el.properties.avg_p,
+            combinedType: [
+              ...new Set(el.properties.types.map(el => this.combinedTypes[el]))
+            ]
+          }))
+          // .filter(el =>
+          //   this.selectedTypes.some(selectedCat =>
+          //     el.properties.types.includes(selectedCat)
+          //   )
+          // )
+          .filter(el =>
+            this.selectedTypes.some(selectedCat =>
+              el.combinedType.includes(selectedCat)
+            )
+          )
+      );
     }
   },
   mounted: function() {
     const that = this;
-    this.selectedTypes = this.typeUniques;
     d3.tsv('data/groups.tsv').then(function(data) {
       that.groups = data;
+    });
+    d3.tsv('data/combinedtypes.tsv').then(function(data) {
+      that.combinedTypes = Object.assign(
+        ...data.flatMap(el => ({ [el.type]: el.combinedType }))
+      );
     });
     this.setData();
   },
@@ -317,37 +335,25 @@ export default {
       ].join(' ')}`;
     },
     typeUniques() {
-      const unwantedTypes = ['point_of_interest', 'establishment'];
+      const unwantedTypes = [
+        'point_of_interest',
+        'establishment',
+        'supermarket',
+        'food'
+      ];
       const filterUnwantedTypes = el => !unwantedTypes.includes(el);
       const getUniques = arr => [...new Set(arr)];
       const types = arr => arr.flatMap(el => el.properties.types);
       return getUniques(types(this.data)).filter(filterUnwantedTypes);
     },
+    combinedTypeUniques() {
+      return [...new Set(Object.values(this.combinedTypes))];
+    },
     filteredData() {
-      return this.data
-        .filter(el =>
-          this.selectedTypes.some(selectedCat =>
-            el.properties.types.includes(selectedCat)
-          )
-        )
-        .map(el => ({
-          ...el,
-          diff_current_average:
-            el.properties.current_popularity - el.properties.avg_p
-        }));
+      return this.filterData(this.data);
     },
     filteredDataInBounds() {
-      return this.dataInBounds
-        .filter(el =>
-          this.selectedTypes.some(selectedCat =>
-            el.properties.types.includes(selectedCat)
-          )
-        )
-        .map(el => ({
-          ...el,
-          diff_current_average:
-            el.properties.current_popularity - el.properties.avg_p
-        }));
+      return this.filterData(this.dataInBounds);
     },
     groupsData() {
       // return Array.from(group(this.groups, el => el.group));
