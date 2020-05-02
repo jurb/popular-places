@@ -49,7 +49,7 @@
           <group-table
             v-if="groupsData.length > 0"
             :data="groupsData"
-            title="Samengestelde plekken"
+            title="Hotspots ⚠️"
             v-on:selected="setSelectedLocation"
           />
           <places-table
