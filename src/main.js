@@ -20,7 +20,7 @@ new Vue({
       if (user) {
         this.$router.push('/places').catch(err => {});
       } else {
-        this.$router.push('/auth');
+        this.$router.push('/auth').catch(err => {});
       }
     });
   },
