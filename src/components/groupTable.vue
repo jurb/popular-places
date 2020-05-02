@@ -1,13 +1,13 @@
 <template>
   <div>
     <h2>
-      <b-tooltip
+      <!-- <b-tooltip
         label="Deze locaties zijn op verzoek van THOR samengesteld"
         position="is-right"
         dashed
       >
         {{ title }}
-      </b-tooltip>
+      </b-tooltip> -->
     </h2>
     <b-table
       :data="data"
@@ -16,6 +16,7 @@
       default-sort="avg_current_popularity"
       default-sort-direction="desc"
       paginated
+      narrowed
       sort-icon="chevron-up"
       per-page="10"
       :mobile-cards="false"
