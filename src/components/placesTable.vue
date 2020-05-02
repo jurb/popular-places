@@ -9,6 +9,7 @@
       default-sort-direction="desc"
       detailed
       paginated
+      narrowed
       sort-icon="chevron-up"
       per-page="10"
       :mobile-cards="false"
@@ -63,6 +64,9 @@
           width="40"
         >
           {{ props.row.diff_current_average }}
+        </b-table-column>
+        <b-table-column field="combinedType" label="Categorie" width="40">
+          {{ props.row.combinedType.filter(el => el).join(', ') }}
         </b-table-column>
         <!-- <b-table-column field="difference" label="Verschil" sortable width="40">
           {{ props.row.difference }}
