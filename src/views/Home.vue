@@ -25,27 +25,69 @@
             | <a @click="logOut">Log uit</a>
           </p>
           <p>
-            Data rond {{ prettyDate }} <br />
+            Data rond {{ prettyDate }}
             <b-button
               @click="setData(timestamp - 3600000, 'left')"
-              size=""
+              size="is-small"
               icon-right="chevron-left"
               :loading="loading"
             ></b-button
-            ><span class="is-size-4">
-              {{ prettyHour }}:{{ prettyMinute }}
-            </span>
+            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
             <b-button
               v-if="
-                Math.floor(timestamp / 1000) !==
-                  Math.floor(initialTimestamp / 1000)
+                Math.floor(timestamp / 1100) !==
+                  Math.floor(initialTimestamp / 1100)
               "
               @click="setData(timestamp + 3600000, 'right')"
-              size=""
+              size="is-small"
               icon-right="chevron-right"
               :loading="loading"
             ></b-button>
           </p>
+          <hr class="hr" />
+
+          <!-- <hr class="hr" /> -->
+
+          <b-tabs v-model="activeTab" size="is-medium" :animated="false">
+            <b-tab-item label="Alle plekken">
+              <!-- Drukte plekken in beeld op kaart 🗺 -->
+              <places-table
+                v-on:selected="setSelectedLocation"
+                :selected-location="selectedLocation"
+                title=""
+                sortBy="properties.current_popularity"
+                :data="
+                  getTableData({
+                    data: filteredDataInBounds,
+                    filterProperty: 'types',
+                    filterValue: 'point_of_interest',
+                    sortBy: 'current_popularity',
+                    numberOfRows: 9999
+                  })
+                "
+                v-if="
+                  getTableData({
+                    data: filteredDataInBounds,
+                    filterProperty: 'types',
+                    filterValue: 'point_of_interest',
+                    sortBy: 'current_popularity',
+                    numberOfRows: 9999
+                  }).length > 0
+                "
+              />
+            </b-tab-item>
+
+            <b-tab-item label="Hotspots">
+              <!-- Hotspots ⚠️ -->
+              <group-table
+                v-if="groupsData.length > 0"
+                :data="groupsData"
+                title=""
+                v-on:selected="setSelectedLocation"
+                :selected-location="selectedLocation"
+              />
+            </b-tab-item>
+          </b-tabs>
           <h2>Categorieën ({{ filteredData.length }} items)</h2>
           <b-field style="margin-left: 0.6rem;" grouped group-multiline>
             <b-checkbox-button
@@ -59,38 +101,8 @@
               }})
             </b-checkbox-button></b-field
           >
-          <group-table
-            v-if="groupsData.length > 0"
-            :data="groupsData"
-            title="Hotspots ⚠️"
-            v-on:selected="setSelectedLocation"
-            :selected-location="selectedLocation"
-          />
-          <places-table
-            v-on:selected="setSelectedLocation"
-            :selected-location="selectedLocation"
-            title="Drukte plekken in beeld op kaart 🗺"
-            sortBy="properties.current_popularity"
-            :data="
-              getTableData({
-                data: filteredDataInBounds,
-                filterProperty: 'types',
-                filterValue: 'point_of_interest',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              })
-            "
-            v-if="
-              getTableData({
-                data: filteredDataInBounds,
-                filterProperty: 'types',
-                filterValue: 'point_of_interest',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              }).length > 0
-            "
-          />
-          <places-table
+
+          <!-- <places-table
             v-on:selected="setSelectedLocation"
             :selected-location="selectedLocation"
             title="Drukte parken 🌳"
@@ -137,7 +149,7 @@
                 numberOfRows: 9999
               }).length > 0
             "
-          />
+          /> -->
         </div>
         <div class="column ">
           <places-map
@@ -176,6 +188,7 @@ export default {
       initialLoad: true,
       errorCount: 0,
       groups: [],
+      activeTab: 0,
       combinedTypes: [],
       daysOfWeek: [
         'zondag',
@@ -422,5 +435,9 @@ h2 {
 ul,
 .block {
   margin-left: 0.8em !important ;
+}
+hr {
+  background-color: lightgrey;
+  border: 0.5px;
 }
 </style>
