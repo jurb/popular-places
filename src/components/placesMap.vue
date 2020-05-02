@@ -39,7 +39,7 @@
 
           Huidige pop. score: {{ point.properties.current_popularity }} <br />
           Normale pop. score: {{ point.properties.avg_p }} <br />
-          Laatst ververst op:
+          Data meten op:
           {{
             `${new Date(point.properties.scraped_at * 1000).getDate()} ${
               months[new Date(point.properties.scraped_at * 1000).getMonth()]
