@@ -8,6 +8,8 @@
       ref="map"
       @update:bounds="boundsUpdated"
     >
+      <LGeoJson :geojson="veiligheidsregio" :options="geojsonoptions" />
+
       <l-control position="bottomright">
         <button class="button" @click="scrollToTop">^</button>
       </l-control>
@@ -69,6 +71,8 @@
 
 <script>
 import L from 'leaflet';
+import veiligheidsregio from '../../public/data/veiligheidsegio_amsterdam_amstelland.json';
+
 import {
   LMap,
   LTileLayer,
@@ -78,6 +82,7 @@ import {
   LPopup,
   LControlZoom,
   LTooltip,
+  LGeoJson,
   LControl
 } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -88,6 +93,7 @@ export default {
   props: ['data', 'selectedLocation'],
   data() {
     return {
+      veiligheidsregio: veiligheidsregio,
       months: [
         'jan',
         'feb',
@@ -110,7 +116,14 @@ export default {
         attribution: 'CC-BY-4.0 Gemeente Amsterdam'
       },
       bounds: null,
-      localData: this.data
+      localData: this.data,
+      geojsonoptions: {
+        style: {
+          color: '#8b0000',
+          weight: 0.5,
+          fill: false
+        }
+      }
     };
   },
   components: {
@@ -122,6 +135,7 @@ export default {
     LPopup,
     LControlZoom,
     LTooltip,
+    LGeoJson,
     LControl
   },
   watch: {},
