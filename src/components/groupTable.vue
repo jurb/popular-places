@@ -1,14 +1,6 @@
 <template>
   <div>
-    <h2>
-      <!-- <b-tooltip
-        label="Deze locaties zijn op verzoek van THOR samengesteld"
-        position="is-right"
-        dashed
-      >
-        {{ title }}
-      </b-tooltip> -->
-    </h2>
+    <h2></h2>
     <b-table
       :data="data"
       v-if="data.length"
@@ -28,6 +20,15 @@
           width="300"
           :searchable="true"
         >
+          <template slot="header" slot-scope="{ column }">
+            <b-tooltip
+              label="Deze locaties zijn op verzoek van THOR samengesteld"
+              position="is-right"
+              dashed
+            >
+              {{ column.label }}
+            </b-tooltip>
+          </template>
           {{ props.row.group }}
         </b-table-column>
         <b-table-column
