@@ -6,51 +6,22 @@
     </p>
     <div class="home" v-if="render">
       <div class="columns">
-        <div class="column is-half is-narrow selection-pane">
+        <div class="column is-half is-narrow is-gapless selection-pane">
           <!-- <history-chart :data="data" /> -->
-          <p class="top-info">
-            <a
-              @click="
-                initialTimestamp = +new Date();
-                setData(+new Date());
-              "
-              >Nieuwste data</a
-            >
-            |
-            <a
-              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
-              target="_blank"
-              >Over deze kaart</a
-            >
-            | <a @click="logOut">Log uit</a>
-          </p>
-          <p>
-            Data rond {{ prettyDate }}
-            <b-button
-              @click="setData(timestamp - 3600000, 'left')"
-              size="is-small"
-              icon-right="chevron-left"
-              :loading="loading"
-            ></b-button
-            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-            <b-button
-              v-if="
-                Math.floor(timestamp / 1100) !==
-                  Math.floor(initialTimestamp / 1100)
-              "
-              @click="setData(timestamp + 3600000, 'right')"
-              size="is-small"
-              icon-right="chevron-right"
-              :loading="loading"
-            ></b-button>
-          </p>
-          <hr class="hr" />
-
-          <!-- <hr class="hr" /> -->
-
           <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-            <b-tab-item label="Alle plekken">
-              <!-- Drukte plekken in beeld op kaart 🗺 -->
+            <b-field style="margin-left: 0.6rem;" grouped group-multiline>
+              <b-checkbox-button
+                v-for="type in combinedTypeUniques"
+                v-bind:key="type.id"
+                v-model="selectedTypes"
+                :native-value="type"
+                >{{ type }} ({{
+                  filteredData.filter(el => el.combinedType.includes(type))
+                    .length
+                }})
+              </b-checkbox-button></b-field
+            >
+            <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
               <places-table
                 v-on:selected="setSelectedLocation"
                 :selected-location="selectedLocation"
@@ -88,19 +59,41 @@
               />
             </b-tab-item>
           </b-tabs>
-          <h2>Categorieën ({{ filteredData.length }} items)</h2>
-          <b-field style="margin-left: 0.6rem;" grouped group-multiline>
-            <b-checkbox-button
-              v-for="type in combinedTypeUniques"
-              v-bind:key="type.id"
-              v-model="selectedTypes"
-              :native-value="type"
-              >{{ type }} ({{
-                filteredData.filter(el => el.combinedType.includes(type))
-                  .length
-              }})
-            </b-checkbox-button></b-field
-          >
+          <p>
+            Data rond {{ prettyDate }}
+            <b-button
+              @click="setData(timestamp - 3600000, 'left')"
+              size="is-small"
+              icon-right="chevron-left"
+              :loading="loading"
+            ></b-button
+            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+            <b-button
+              v-if="
+                Math.floor(timestamp / 1100) !==
+                  Math.floor(initialTimestamp / 1100)
+              "
+              @click="setData(timestamp + 3600000, 'right')"
+              size="is-small"
+              icon-right="chevron-right"
+              :loading="loading"
+            ></b-button>
+            <br />
+            <a
+              @click="
+                initialTimestamp = +new Date();
+                setData(+new Date());
+              "
+              >Nieuwste data</a
+            >
+            |
+            <a
+              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+              target="_blank"
+              >Over deze kaart</a
+            >
+            | <a @click="logOut">Log uit</a>
+          </p>
 
           <!-- <places-table
             v-on:selected="setSelectedLocation"
@@ -439,5 +432,8 @@ ul,
 hr {
   background-color: lightgrey;
   border: 0.5px;
+}
+.top-info {
+  /* background-color: lightgrey; */
 }
 </style>
