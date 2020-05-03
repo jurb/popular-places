@@ -48,7 +48,7 @@
               />
             </b-tab-item>
 
-            <b-tab-item label="Hotspots">
+            <b-tab-item label="Hotspots ⚠️">
               <!-- Hotspots ⚠️ -->
               <group-table
                 v-if="groupsData.length > 0"
