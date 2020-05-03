@@ -19,7 +19,7 @@
           field="properties.name"
           label="Naam"
           width="300"
-          :searchable="true"
+          searchable
         >
           {{ props.row.properties.name }}
         </b-table-column>
