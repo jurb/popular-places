@@ -94,7 +94,7 @@
             <li> <a
               href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
               target="_blank"
-              >Over deze kaart</a
+              >Over deze kaart <b-icon icon="open-in-new" size="is-small" /></a
             ></li>
             <li>
             <b-collapse
@@ -113,8 +113,10 @@
                   :icon="!props.open ? 'chevron-down' : 'chevron-up'"
                 ></b-icon>
               </a>
-                            <div class="callout">
-
+                <div class="callout">
+                  <p v-html="addPlaceResponse === 'Error'
+                    ? 'Dit is geen geldige place ID'
+                    : addPlaceResponse"> </p>
               <p>
                 <b-input placeholder="Place ID" v-model="addPlaceInput">
                 </b-input>
@@ -127,10 +129,7 @@
                   Voeg toe
                 </button>
               </p>
-              <p v-html="addPlaceResponse === 'Error'
-                    ? 'Dit is geen geldige place ID'
-                    : addPlaceResponse">
-              </p></div>
+             </div>
             </b-collapse>
 </li>
             <li><a @click="logOut">Log uit</a></li>
@@ -205,7 +204,7 @@ export default {
       timestamp: +new Date(),
       date: '',
       addPlaceInput: null,
-      addPlaceResponse: 'Zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> een geldig Place ID op'
+      addPlaceResponse: 'Zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> een geldig Place ID op.'
     };
   },
   components: {
@@ -446,7 +445,7 @@ h2 {
 }
 .callout {
   padding: .2rem;
-  margin-bottom: .2rem;
-  background-color: lightgrey
+  margin: .2rem;
+  background-color: gainsboro;
 }
 </style>
