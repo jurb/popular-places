@@ -1,10 +1,10 @@
 module.exports = {
   presets: [
     [
-      "@vue/app",
+      '@vue/app',
       {
         targets: {
-          browsers: ["> 1%", "ie 11", "not op_mini all"]
+          browsers: ['> 1%', 'ie 11', 'not op_mini all']
         }
       }
     ]

@@ -1,4 +1,4 @@
-var webpack = require("webpack");
+var webpack = require('webpack');
 
 // module.exports = {
 //   configureWebpack: {
@@ -13,8 +13,8 @@ var webpack = require("webpack");
 module.exports = {
   configureWebpack: {
     devServer: {
-      host: "localhost",
-      headers: { "Access-Control-Allow-Origin": "*" },
-    },
-  },
+      host: 'localhost',
+      headers: { 'Access-Control-Allow-Origin': '*' }
+    }
+  }
 };
