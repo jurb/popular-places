@@ -81,70 +81,63 @@
               :loading="loading"
             ></b-button>
             <br />
+
+            <ul><li>
             <a
               @click="
                 initialTimestamp = +new Date();
                 setData(+new Date());
               "
               >Nieuwste data</a
-            >
-            |
-            <a
+            ></li>
+
+            <li> <a
               href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
               target="_blank"
               >Over deze kaart</a
+            ></li>
+            <li>
+            <b-collapse
+              :open="false"
+              position="is-top"
+              aria-id="contentIdForA11y1"
             >
-            | <a @click="logOut">Log uit</a>
+              <a
+                slot="trigger"
+                slot-scope="props"
+                aria-controls="contentIdForA11y1"
+              >
+                Locatie toevoegen
+                <b-icon
+                size="is-small"
+                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                ></b-icon>
+              </a>
+                            <div class="callout">
+
+              <p>
+                <b-input placeholder="Place ID" v-model="addPlaceInput">
+                </b-input>
+              </p>
+              <p>
+                <button
+                  class="button is-primary"
+                  @click="addPlace(addPlaceInput)"
+                >
+                  Voeg toe
+                </button>
+              </p>
+              <p v-html="addPlaceResponse === 'Error'
+                    ? 'Dit is geen geldige place ID'
+                    : addPlaceResponse">
+              </p></div>
+            </b-collapse>
+</li>
+            <li><a @click="logOut">Log uit</a></li>
+            </ul>
+
           </p>
 
-          <!-- <places-table
-            v-on:selected="setSelectedLocation"
-            :selected-location="selectedLocation"
-            title="Drukte parken 🌳"
-            sortBy="properties.current_popularity"
-            :data="
-              getTableData({
-                data: filteredData,
-                filterProperty: 'types',
-                filterValue: 'park',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              })
-            "
-            v-if="
-              getTableData({
-                data: filteredData,
-                filterProperty: 'types',
-                filterValue: 'park',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              }).length > 0
-            "
-          />
-          <places-table
-            v-on:selected="setSelectedLocation"
-            :selected-location="selectedLocation"
-            title="Drukte winkels 🛒"
-            sortBy="properties.current_popularity"
-            :data="
-              getTableData({
-                data: filteredData,
-                filterProperty: 'types',
-                filterValue: 'store',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              })
-            "
-            v-if="
-              getTableData({
-                data: filteredData,
-                filterProperty: 'types',
-                filterValue: 'store',
-                sortBy: 'current_popularity',
-                numberOfRows: 9999
-              }).length > 0
-            "
-          /> -->
         </div>
         <div class="column ">
           <places-map
@@ -210,7 +203,9 @@ export default {
       ],
       initialTimestamp: +new Date(),
       timestamp: +new Date(),
-      date: ''
+      date: '',
+      addPlaceInput: null,
+      addPlaceResponse: 'Zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> een geldig Place ID op'
     };
   },
   components: {
@@ -279,27 +274,42 @@ export default {
         .slice(0, obj.numberOfRows);
     },
     filterData: function(data) {
-      return (
-        data
-          .map(el => ({
-            ...el,
-            diff_current_average:
-              el.properties.current_popularity - el.properties.avg_p,
-            combinedType: [
-              ...new Set(el.properties.types.map(el => this.combinedTypes[el]))
-            ]
-          }))
-          // .filter(el =>
-          //   this.selectedTypes.some(selectedCat =>
-          //     el.properties.types.includes(selectedCat)
-          //   )
-          // )
-          .filter(el =>
-            this.selectedTypes.some(selectedCat =>
-              el.combinedType.includes(selectedCat)
-            )
+      return data
+        .map(el => ({
+          ...el,
+          diff_current_average:
+            el.properties.current_popularity - el.properties.avg_p,
+          combinedType: [
+            ...new Set(el.properties.types.map(el => this.combinedTypes[el]))
+          ]
+        }))
+        .filter(el =>
+          this.selectedTypes.some(selectedCat =>
+            el.combinedType.includes(selectedCat)
           )
-      );
+        );
+    },
+    addPlace: function(id) {
+      const that = this;
+      d3.json(`https://covid19.api.commondatafactory.nl/scrape_place/${id}`, {
+        headers: new Headers({
+          Authorization: `Basic ${btoa(
+            `${process.env.VUE_APP_PLACES_API_USER}:${
+              process.env.VUE_APP_PLACES_API_PASS
+            }`
+          )}`
+        })
+      })
+        .then(function(data) {
+          that.addPlaceResponse = data;
+        })
+        .then(function() {
+          that.setData(+new Date());
+          that.addPlaceInput = null;
+        })
+        .catch(function(error) {
+          that.addPlaceResponse = 'Error';
+        });
     }
   },
   mounted: function() {
@@ -427,15 +437,16 @@ h2 {
   margin-left: 0.6em !important ;
   font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
 }
-ul,
+
 .block {
   margin-left: 0.8em !important ;
 }
-hr {
-  background-color: lightgrey;
-  border: 0.5px;
+.input {
+  margin: 0;
 }
-.top-info {
-  /* background-color: lightgrey; */
+.callout {
+  padding: .2rem;
+  margin-bottom: .2rem;
+  background-color: lightgrey
 }
 </style>
