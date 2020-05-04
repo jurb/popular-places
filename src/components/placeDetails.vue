@@ -1,11 +1,17 @@
 <template>
-  <div>
-    <!-- <div>{{ currentMeasurement }}</div> -->
+  <div v-if="data">
+    <div>
+      Meest recente meting: {{ currentMeasurement.prettyDate }},
+      {{ currentMeasurement.prettyHour }}:{{ currentMeasurement.prettyMinute }}.
+    </div>
     <history-chart
       :day-data="dayData"
       :current-measurement="currentMeasurement"
       title="chart title"
     />
+    <div>
+      <a @click="refreshPlaceData(id)">Ververs data voor deze locatie</a>
+    </div>
   </div>
 </template>
 
@@ -17,21 +23,67 @@ export default {
   props: ['id', 'timestamp'],
   components: { historyChart },
   data() {
-    return { data: null, enhancedData: {} };
+    return {
+      data: null,
+      enhancedData: {},
+      daysOfWeek: [
+        'zondag',
+        'maandag',
+        'dinsdag',
+        'woensdag',
+        'donderdag',
+        'vrijdag',
+        'zaterdag'
+      ],
+      months: [
+        'jan',
+        'feb',
+        'maart',
+        'april',
+        'mei',
+        'juni',
+        'juli',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec'
+      ]
+    };
   },
-  mounted: function(id) {
-    const that = this;
-    d3.json(`https://covid19.api.commondatafactory.nl/place/${this.id}`, {
-      headers: new Headers({
-        Authorization: `Basic ${btoa(
-          `${process.env.VUE_APP_PLACES_API_USER}:${
-            process.env.VUE_APP_PLACES_API_PASS
-          }`
-        )}`
-      })
-    }).then(function(data) {
-      return (that.data = data);
-    });
+  mounted: function() {
+    this.getPlaceData(this.id);
+  },
+  methods: {
+    getPlaceData: function(id) {
+      const that = this;
+      d3.json(`https://covid19.api.commondatafactory.nl/place/${id}`, {
+        headers: new Headers({
+          Authorization: `Basic ${btoa(
+            `${process.env.VUE_APP_PLACES_API_USER}:${
+              process.env.VUE_APP_PLACES_API_PASS
+            }`
+          )}`
+        })
+      }).then(function(data) {
+        return (that.data = data);
+      });
+    },
+    refreshPlaceData: function(id) {
+      const that = this;
+      d3.json(`https://covid19.api.commondatafactory.nl/scrape_place/${id}`, {
+        headers: new Headers({
+          Authorization: `Basic ${btoa(
+            `${process.env.VUE_APP_PLACES_API_USER}:${
+              process.env.VUE_APP_PLACES_API_PASS
+            }`
+          )}`
+        })
+      }).then(function(data) {
+        that.getPlaceData(id);
+        that.$emit('place-updated');
+      });
+    }
   },
   computed: {
     // TODO: show the right hour when stepping through time
@@ -43,7 +95,20 @@ export default {
             date: date(),
             day: date().getDay() - 1 === -1 ? 6 : date().getDay() - 1,
             hour: date().getHours(),
-            measurement: this.data['current_popularity']
+            measurement: this.data['current_popularity'],
+            prettyDate: `${[
+              this.daysOfWeek[date().getDay()],
+              date().getDate(),
+              this.months[date().getMonth()]
+            ].join(' ')}`,
+            prettyHour:
+              date().getHours() < 10
+                ? '0' + date().getHours()
+                : date().getHours(),
+            prettyMinute:
+              date().getMinutes() < 10
+                ? '0' + date().getMinutes()
+                : date().getMinutes()
           }
         : {};
     },

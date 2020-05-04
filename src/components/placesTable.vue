@@ -73,7 +73,10 @@
         </b-table-column> -->
       </template>
       <template slot="detail" slot-scope="props">
-        <place-details :id="props.row.id" />
+        <place-details
+          v-on:place-updated="$emit('place-updated')"
+          :id="props.row.id"
+        />
       </template>
     </b-table>
   </div>

@@ -9,12 +9,13 @@
         <div class="column is-half is-narrow is-gapless selection-pane">
           <!-- <history-chart :data="data" /> -->
           <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-            <b-field style="margin-left: 0.6rem;" grouped group-multiline>
+            <b-field grouped group-multiline>
               <b-checkbox-button
                 v-for="type in combinedTypeUniques"
                 v-bind:key="type.id"
                 v-model="selectedTypes"
                 :native-value="type"
+                outlined
                 >{{ type }} ({{
                   filteredData.filter(el => el.combinedType.includes(type))
                     .length
@@ -24,6 +25,7 @@
             <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
               <places-table
                 v-on:selected="setSelectedLocation"
+                v-on:place-updated="setData(+new Date())"
                 :selected-location="selectedLocation"
                 title=""
                 sortBy="properties.current_popularity"
