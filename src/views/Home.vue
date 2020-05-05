@@ -5,6 +5,25 @@
       <a @click="reloadPage">reload the page</a> to try again.
     </p>
     <div class="home" v-if="render">
+      <p>
+                  Data rond {{ prettyDate }}
+            <b-button
+              @click="setData(timestamp - 3600000, 'left')"
+              size="is-small"
+              icon-right="chevron-left"
+              :loading="loading"
+            ></b-button
+            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+            <b-button
+              v-if="
+                Math.floor(timestamp / 1100) !==
+                  Math.floor(initialTimestamp / 1100)
+              "
+              @click="setData(timestamp + 3600000, 'right')"
+              size="is-small"
+              icon-right="chevron-right"
+              :loading="loading"
+            ></b-button></p>
       <div class="columns">
         <div class="column is-half is-narrow is-gapless selection-pane">
           <!-- <history-chart :data="data" /> -->
@@ -62,26 +81,6 @@
             </b-tab-item>
           </b-tabs>
           <p>
-            Data rond {{ prettyDate }}
-            <b-button
-              @click="setData(timestamp - 3600000, 'left')"
-              size="is-small"
-              icon-right="chevron-left"
-              :loading="loading"
-            ></b-button
-            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-            <b-button
-              v-if="
-                Math.floor(timestamp / 1100) !==
-                  Math.floor(initialTimestamp / 1100)
-              "
-              @click="setData(timestamp + 3600000, 'right')"
-              size="is-small"
-              icon-right="chevron-right"
-              :loading="loading"
-            ></b-button>
-            <br />
-
             <ul><li>
             <a
               @click="
@@ -204,7 +203,7 @@ export default {
       timestamp: +new Date(),
       date: '',
       addPlaceInput: null,
-      addPlaceResponse: 'Zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> een geldig Place ID op.'
+      addPlaceResponse: 'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.'
     };
   },
   components: {
