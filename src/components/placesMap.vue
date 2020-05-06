@@ -39,7 +39,7 @@
 
           Huidige pop. score: {{ point.properties.current_popularity }} <br />
           Normale pop. score: {{ point.properties.avg_p }} <br />
-          Data meten op:
+          Data gemeten op:
           {{
             `${new Date(point.properties.scraped_at * 1000).getDate()} ${
               months[new Date(point.properties.scraped_at * 1000).getMonth()]
@@ -56,6 +56,7 @@
             }`
           }}
           <br />
+          Categorie: {{ point.combinedType.filter(el => el).join(',') }} <br />
           <a
             :href="`https://www.google.com/maps?q=${point.properties.name}`"
             target="_blank"
