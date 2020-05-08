@@ -8,7 +8,11 @@
       ref="map"
       @update:bounds="boundsUpdated"
     >
-      <LGeoJson :geojson="veiligheidsregio" :options="geojsonoptions" />
+      <LGeoJson
+        :geojson="veiligheidsregio"
+        :options="veiligheidgeojsonoptions"
+      />
+      <LGeoJson :geojson="gebieden" :options="gebiedengeojsonoptions" />
 
       <l-control position="bottomright">
         <button class="button" @click="scrollToTop">^</button>
@@ -73,6 +77,7 @@
 <script>
 import L from 'leaflet';
 import veiligheidsregio from '../../public/data/veiligheidsegio_amsterdam_amstelland.json';
+import gebieden from '../../public/data/gebieden.json';
 
 import {
   LMap,
@@ -95,6 +100,7 @@ export default {
   data() {
     return {
       veiligheidsregio: veiligheidsregio,
+      gebieden: gebieden,
       months: [
         'jan',
         'feb',
@@ -118,10 +124,19 @@ export default {
       },
       bounds: null,
       localData: this.data,
-      geojsonoptions: {
+      gebiedengeojsonoptions: {
+        style: {
+          color: '#0000ff',
+          weight: 1,
+          opacity: 0.2,
+          fill: false
+        }
+      },
+      veiligheidgeojsonoptions: {
         style: {
           color: '#8b0000',
-          weight: 0.5,
+          weight: 1,
+          opacity: 0.5,
           fill: false
         }
       }
