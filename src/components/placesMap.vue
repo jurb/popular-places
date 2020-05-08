@@ -126,7 +126,7 @@ export default {
       localData: this.data,
       gebiedengeojsonoptions: {
         style: {
-          color: '#0000ff',
+          color: '#000',
           weight: 1,
           opacity: 0.2,
           fill: false
