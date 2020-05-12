@@ -72,7 +72,7 @@
         ></l-circle
       >
     </l-map>
-    <p><em>Hoe groter de cirkel, hoe drukker de plek op dit moment is.</em></p>
+    <p><em>Hoe groter en donkerder de cirkel, hoe drukker de plek op dit moment is.</em></p>
   </div>
 </template>
 
