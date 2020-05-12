@@ -53,7 +53,7 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 section {width: 400px; padding: 2rem;}
 .button {font-family: 'Avenir LT W01 85 Heavy'; margin:.4rem}
 </style>
