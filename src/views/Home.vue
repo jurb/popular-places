@@ -476,6 +476,7 @@ h2 {
   padding: 0.2rem;
   margin: 0.2rem;
   background-color: gainsboro;
+  font-size: 1rem !important;
 }
 .dropdown-content {
   background-color: #00000000;
