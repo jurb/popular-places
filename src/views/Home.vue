@@ -90,7 +90,7 @@
               />
             </b-tab-item>
           </b-tabs>
-          <p></p>
+          <p>
           <ul>
             <li>
               <a
@@ -101,7 +101,6 @@
                 >Nieuwste data</a
               >
             </li>
-
             <li>
               <a
                 href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
@@ -151,6 +150,7 @@
             </li>
             <li><a @click="logOut">Log uit</a></li>
           </ul>
+          </p>
         </div>
         <div class="column ">
           <places-map
