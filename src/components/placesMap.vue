@@ -193,8 +193,8 @@ export default {
     popularity2color: function() {
       return d3
         .scaleSequential()
-        .domain([0, 200])
-        .interpolator(d3.interpolateYlOrRd);
+        .domain([-50, 200])
+        .interpolator(d3.interpolateOrRd);
     },
     popularity2opacity: function() {
       return d3
