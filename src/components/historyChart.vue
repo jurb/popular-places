@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     dataMax() {
-      return max(this.dayData, d => {
+      return max([...this.dayData, this.currentMeasurement.measurement], d => {
         return d;
       });
     },
