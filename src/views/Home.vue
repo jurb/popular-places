@@ -6,24 +6,34 @@
     </p>
     <div class="home" v-if="render">
       <p>
-                  Data rond {{ prettyDate }}
-            <b-button
-              @click="setData(timestamp - 3600000, 'left')"
-              size="is-small"
-              icon-right="chevron-left"
-              :loading="loading"
-            ></b-button
-            ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-            <b-button
-              v-if="
-                Math.floor(timestamp / 1100) !==
-                  Math.floor(initialTimestamp / 1100)
-              "
-              @click="setData(timestamp + 3600000, 'right')"
-              size="is-small"
-              icon-right="chevron-right"
-              :loading="loading"
-            ></b-button></p>
+        Data rond
+        <b-dropdown aria-role="list">
+          <a slot="trigger" slot-scope="{ active }"> {{ prettyDate }} </a
+          ><b-dropdown-item custom inline>
+            <b-datetimepicker
+              v-model="datetimePicker"
+              inline
+              :max-datetime="new Date()"
+              :min-datetime="new Date('2020-04-12')"
+            ></b-datetimepicker></b-dropdown-item
+        ></b-dropdown>
+        &nbsp;<b-button
+          @click="setData(timestamp - 3600000, 'left')"
+          size="is-small"
+          icon-right="chevron-left"
+          :loading="loading"
+        ></b-button
+        ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+        <b-button
+          v-if="
+            Math.floor(timestamp / 1100) !== Math.floor(initialTimestamp / 1100)
+          "
+          @click="setData(timestamp + 3600000, 'right')"
+          size="is-small"
+          icon-right="chevron-right"
+          :loading="loading"
+        ></b-button>
+      </p>
       <div class="columns">
         <div class="column is-half is-narrow is-gapless selection-pane">
           <!-- <history-chart :data="data" /> -->
@@ -80,62 +90,67 @@
               />
             </b-tab-item>
           </b-tabs>
-          <p>
-            <ul><li>
-            <a
-              @click="
-                initialTimestamp = +new Date();
-                setData(+new Date());
-              "
-              >Nieuwste data</a
-            ></li>
-
-            <li> <a
-              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
-              target="_blank"
-              >Over deze kaart <b-icon icon="open-in-new" size="is-small" /></a
-            ></li>
+          <p></p>
+          <ul>
             <li>
-            <b-collapse
-              :open="false"
-              position="is-top"
-              aria-id="contentIdForA11y1"
-            >
               <a
-                slot="trigger"
-                slot-scope="props"
-                aria-controls="contentIdForA11y1"
+                @click="
+                  initialTimestamp = +new Date();
+                  setData(+new Date());
+                "
+                >Nieuwste data</a
               >
-                Locatie toevoegen
-                <b-icon
-                size="is-small"
-                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
-                ></b-icon>
-              </a>
-                <div class="callout">
-                  <p v-html="addPlaceResponse === 'Error'
-                    ? 'Dit is geen geldige place ID'
-                    : addPlaceResponse"> </p>
-              <p>
-                <b-input placeholder="Place ID" v-model="addPlaceInput">
-                </b-input>
-              </p>
-              <p>
-                <button
-                  class="button is-primary"
-                  @click="addPlace(addPlaceInput)"
+            </li>
+
+            <li>
+              <a
+                href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+                target="_blank"
+                >Over deze kaart <b-icon icon="open-in-new" size="is-small"
+              /></a>
+            </li>
+            <li>
+              <b-collapse
+                :open="false"
+                position="is-top"
+                aria-id="contentIdForA11y1"
+              >
+                <a
+                  slot="trigger"
+                  slot-scope="props"
+                  aria-controls="contentIdForA11y1"
                 >
-                  Voeg toe
-                </button>
-              </p>
-             </div>
-            </b-collapse>
-</li>
+                  Locatie toevoegen
+                  <b-icon
+                    size="is-small"
+                    :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                  ></b-icon>
+                </a>
+                <div class="callout">
+                  <p
+                    v-html="
+                      addPlaceResponse === 'Error'
+                        ? 'Dit is geen geldige place ID'
+                        : addPlaceResponse
+                    "
+                  ></p>
+                  <p>
+                    <b-input placeholder="Place ID" v-model="addPlaceInput">
+                    </b-input>
+                  </p>
+                  <p>
+                    <button
+                      class="button is-primary"
+                      @click="addPlace(addPlaceInput)"
+                    >
+                      Voeg toe
+                    </button>
+                  </p>
+                </div>
+              </b-collapse>
+            </li>
             <li><a @click="logOut">Log uit</a></li>
-            </ul>
-
-          </p>
-
+          </ul>
         </div>
         <div class="column ">
           <places-map
@@ -201,9 +216,11 @@ export default {
       ],
       initialTimestamp: +new Date(),
       timestamp: +new Date(),
+      datetimePicker: new Date(),
       date: '',
       addPlaceInput: null,
-      addPlaceResponse: 'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.'
+      addPlaceResponse:
+        'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.'
     };
   },
   components: {
@@ -211,7 +228,11 @@ export default {
     groupTable,
     placesMap
   },
-  watch: {},
+  watch: {
+    datetimePicker: function() {
+      this.setData(+this.datetimePicker);
+    }
+  },
   methods: {
     getInitialTimestamp: function() {
       // TODO: get timestamp from first api call instead of local system
@@ -443,8 +464,17 @@ h2 {
   margin: 0;
 }
 .callout {
-  padding: .2rem;
-  margin: .2rem;
+  padding: 0.2rem;
+  margin: 0.2rem;
   background-color: gainsboro;
+}
+.dropdown-content {
+  background-color: #00000000;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
+    0 0 0 1px rgba(10, 10, 10, 0.1);
+  box-shadow: 0 2px 3px rgba(10, 10, 10, 0), 0 0 0 1px rgba(10, 10, 10, 0);
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
 }
 </style>
