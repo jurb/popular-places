@@ -13,6 +13,8 @@
             <b-datetimepicker
               v-model="datetimePicker"
               inline
+               :focused-date="new Date()"
+                :datepicker="{ firstDayOfWeek: 1, dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'] }"
               :max-datetime="new Date()"
               :min-datetime="new Date('2020-04-12')"
             ></b-datetimepicker></b-dropdown-item
@@ -32,13 +34,13 @@
           size="is-small"
           icon-right="chevron-right"
           :loading="loading"
-        ></b-button>
+        ></b-button><span id="weather" v-if="weatherResponse">&nbsp;<img :src="`https://www.weatherbit.io/static/img/icons/${weatherResponse.data[0].weather.icon}.png`" width=20 /> {{Math.round(weatherResponse.data[0].temp)}} °C</span>
       </p>
       <div class="columns">
         <div class="column is-half is-narrow is-gapless selection-pane">
           <!-- <history-chart :data="data" /> -->
           <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-            <b-field grouped group-multiline>
+            <b-field grouped group-multiline  v-if="selectedTypes">
               <b-checkbox-button
                 v-for="type in combinedTypeUniques"
                 v-bind:key="type.id"
@@ -220,7 +222,8 @@ export default {
       date: '',
       addPlaceInput: null,
       addPlaceResponse:
-        'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.'
+        'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.',
+        weatherResponse: null
     };
   },
   components: {
@@ -263,6 +266,12 @@ export default {
           that.render = true;
           that.loading = false;
           that.errorCount = 0;
+        })
+                .then(function(data) {
+                        d3.json(
+        `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date.toISOString().slice(0,10)}%3A${that.prettyHour-1}&end_date=${that.date.toISOString().slice(0,10)}%3A${that.prettyHour}&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API}
+`      ).then(function(data) {that.weatherResponse = data})
+
         })
         .catch(function(error) {
           ++that.errorCount;
@@ -443,7 +452,7 @@ export default {
   outline: none;
 }
 p {
-  font-size: 1em !important;
+  font-size: 1.25em !important;
   margin: 1em !important;
   font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
 }
