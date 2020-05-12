@@ -21,6 +21,7 @@
         :url="map.url"
         :attribution="map.attribution"
       ></l-tile-layer>
+
       <l-circle
         v-for="point in data"
         v-bind:key="point.id"
@@ -32,9 +33,10 @@
             : [selectedLocation.id]
           ).includes(point.id)
             ? '#f03'
-            : 'blue'
+            : popularity2color(point.properties.current_popularity)
         "
-        :opacity="0.5"
+        :fillColor="popularity2color(point.properties.current_popularity)"
+        :opacity="1"
       >
         <l-tooltip>{{ point.properties.name }} </l-tooltip
         ><l-popup>
@@ -82,6 +84,7 @@ import gebieden from '../../public/data/gebieden.json';
 import {
   LMap,
   LTileLayer,
+  LLayerGroup,
   LMarker,
   LCircleMarker,
   LCircle,
@@ -99,6 +102,7 @@ export default {
   props: ['data', 'selectedLocation'],
   data() {
     return {
+      popupInstance: null,
       veiligheidsregio: veiligheidsregio,
       gebieden: gebieden,
       months: [
@@ -145,6 +149,7 @@ export default {
   components: {
     LMap,
     LTileLayer,
+    LLayerGroup,
     LMarker,
     LCircleMarker,
     LCircle,
@@ -168,6 +173,7 @@ export default {
           )
       );
       this.$emit('data-in-bounds', dataInBounds);
+      console.log(this.popularity2color(423));
     }
   },
   computed: {
@@ -176,11 +182,25 @@ export default {
         d3
           .scaleSqrt()
           // .domain(d3.extent(this.localData, d => d.difference))
-          // .domain(d3.extent(this.localData, d => d.current_popularity))
+          // .domain(
+          //   d3.extent(this.localData, d => d.properties.current_popularity)
+          // )
           // .domain([0, d3.max(this.localData, d => d.current_popularity)])
-          .domain([0, 200])
-          .range([0, 200])
+          .domain([0, 400])
+          .range([0, 300])
       );
+    },
+    popularity2color: function() {
+      return d3
+        .scaleSequential()
+        .domain([0, 200])
+        .interpolator(d3.interpolateYlOrRd);
+    },
+    popularity2opacity: function() {
+      return d3
+        .scaleLinear()
+        .domain([0, 400])
+        .range([0.1, 1]);
     }
   }
 };
