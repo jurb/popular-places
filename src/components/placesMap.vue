@@ -32,7 +32,7 @@
             ? selectedLocation.id
             : [selectedLocation.id]
           ).includes(point.id)
-            ? '#f03'
+            ? 'blue'
             : popularity2color(point.properties.current_popularity)
         "
         :fillColor="popularity2color(point.properties.current_popularity)"
