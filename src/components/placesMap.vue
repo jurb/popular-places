@@ -75,7 +75,7 @@
     </l-map>
     <p>
       <em
-        >Hoe groter en donkerder de cirkel, hoe drukker de plek op dit moment
+        >Hoe donkerder de cirkel, hoe drukker de plek op dit moment
         is.</em
       >
     </p>
