@@ -36,7 +36,8 @@
             : popularity2color(point.properties.current_popularity)
         "
         :fillColor="popularity2color(point.properties.current_popularity)"
-        :opacity="1"
+        :fillOpacity="0.8"
+        :opacity="0.8"
       >
         <l-tooltip>{{ point.properties.name }} </l-tooltip
         ><l-popup>
@@ -72,7 +73,12 @@
         ></l-circle
       >
     </l-map>
-    <p><em>Hoe groter en donkerder de cirkel, hoe drukker de plek op dit moment is.</em></p>
+    <p>
+      <em
+        >Hoe groter en donkerder de cirkel, hoe drukker de plek op dit moment
+        is.</em
+      >
+    </p>
   </div>
 </template>
 
@@ -193,7 +199,7 @@ export default {
     popularity2color: function() {
       return d3
         .scaleSequential()
-        .domain([-50, 200])
+        .domain([0, 200])
         .interpolator(d3.interpolateOrRd);
     },
     popularity2opacity: function() {
