@@ -80,9 +80,7 @@
                 "
               />
             </b-tab-item>
-
             <b-tab-item label="Hotspots ⚠️">
-              <!-- Hotspots ⚠️ -->
               <group-table
                 v-if="groupsData.length > 0"
                 :data="groupsData"
@@ -262,7 +260,7 @@ export default {
           that.timestamp = timestamp;
           that.date = new Date(timestamp);
           // load unique types in selectedTypes filter array on first load
-          !that.render ? (that.selectedTypes = that.combinedTypeUniques) : '';
+          // !that.render ? (that.selectedTypes = that.combinedTypeUniques) : '';
           that.render = true;
           that.loading = false;
           that.errorCount = 0;
@@ -349,6 +347,8 @@ export default {
       that.combinedTypes = Object.assign(
         ...data.flatMap(el => ({ [el.type]: el.combinedType }))
       );
+      // select all types on mount
+      that.selectedTypes = [...new Set(data.map(el => el.combinedType))]
     });
     this.setData();
   },
