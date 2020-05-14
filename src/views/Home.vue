@@ -148,6 +148,7 @@
                 </div>
               </b-collapse>
             </li>
+            <li><a href="https://github.com/jurb/popular-places" target="_blank">Github repo</a></li>
             <li><a @click="logOut">Log uit</a></li>
           </ul>
           </p>
