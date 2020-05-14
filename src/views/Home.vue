@@ -488,9 +488,6 @@ h2 {
 .checkbox-field {
   margin: 1rem 0 .25rem 1rem !important;
 }
-.checkbox {
-  margin-right: .3rem;
-}
 .b-tabs .tab-content {
   padding: 0rem;
 }
