@@ -1,10 +1,11 @@
 <template>
-  <div>
+    <div class="home" v-if="render">
+      <div class="columns">
+        <div class="column is-half is-narrow is-gapless selection-pane">
     <p v-if="errorCount > 24">
       The places API seems to be down. Please
       <a @click="reloadPage">reload the page</a> to try again.
     </p>
-    <div class="home" v-if="render">
       <p>
         Data rond
         <b-dropdown aria-role="list">
@@ -36,12 +37,9 @@
           :loading="loading"
         ></b-button><span id="weather" v-if="weatherResponse">&nbsp;<img :src="`https://www.weatherbit.io/static/img/icons/${weatherResponse.data[0].weather.icon}.png`" width=20 /> {{Math.round(weatherResponse.data[0].temp)}} °C</span>
       </p>
-      <div class="columns">
-        <div class="column is-half is-narrow is-gapless selection-pane">
-          <!-- <history-chart :data="data" /> -->
           <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-            <b-field grouped group-multiline  v-if="selectedTypes">
-              <b-checkbox-button
+                                  <b-field grouped group-multiline class="checkbox-field" v-if="selectedTypes">
+              <b-checkbox
                 v-for="type in combinedTypeUniques"
                 v-bind:key="type.id"
                 v-model="selectedTypes"
@@ -51,8 +49,8 @@
                   filteredData.filter(el => el.combinedType.includes(type))
                     .length
                 }})
-              </b-checkbox-button></b-field
-            >
+              </b-checkbox>
+              </b-field>
             <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
               <places-table
                 v-on:selected="setSelectedLocation"
@@ -153,16 +151,15 @@
           </ul>
           </p>
         </div>
-        <div class="column ">
+        <div class="column">
           <places-map
             v-on:data-in-bounds="setDataInBounds"
             :data="filteredData"
             :selected-location="selectedLocation"
           />
+      </div></div>
         </div>
       </div>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -487,5 +484,14 @@ h2 {
   box-shadow: 0 2px 3px rgba(10, 10, 10, 0), 0 0 0 1px rgba(10, 10, 10, 0);
   padding-bottom: 0.5rem;
   padding-top: 0.5rem;
+}
+.checkbox-field {
+  margin: 1rem 0 .25rem 1rem !important;
+}
+.checkbox {
+  margin-right: .3rem;
+}
+.b-tabs .tab-content {
+  padding: 0rem;
 }
 </style>
