@@ -1,165 +1,187 @@
 <template>
-    <div class="home" v-if="render">
-      <div class="columns">
-        <div class="column is-half is-narrow is-gapless selection-pane">
-    <p v-if="errorCount > 24">
-      The places API seems to be down. Please
-      <a @click="reloadPage">reload the page</a> to try again.
-    </p>
-      <p>
-        Data rond
-        <b-dropdown aria-role="list">
-          <a slot="trigger" slot-scope="{ active }"> {{ prettyDate }} </a
-          ><b-dropdown-item custom inline>
-            <b-datetimepicker
-              v-model="datetimePicker"
-              inline
-               :focused-date="new Date()"
-                :datepicker="{ firstDayOfWeek: 1, dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'] }"
-              :max-datetime="new Date()"
-              :min-datetime="new Date('2020-04-12')"
-            ></b-datetimepicker></b-dropdown-item
-        ></b-dropdown>
-        &nbsp;<b-button
-          @click="setData(timestamp - 3600000, 'left')"
-          size="is-small"
-          icon-right="chevron-left"
-          :loading="loading"
-        ></b-button
-        ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-        <b-button
-          v-if="
-            Math.floor(timestamp / 1100) !== Math.floor(initialTimestamp / 1100)
-          "
-          @click="setData(timestamp + 3600000, 'right')"
-          size="is-small"
-          icon-right="chevron-right"
-          :loading="loading"
-        ></b-button><span id="weather" v-if="weatherResponse">&nbsp;<img :src="`https://www.weatherbit.io/static/img/icons/${weatherResponse.data[0].weather.icon}.png`" width=20 /> {{Math.round(weatherResponse.data[0].temp)}} °C</span>
-      </p>
-          <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-                                  <b-field grouped group-multiline class="checkbox-field" v-if="selectedTypes">
-              <b-checkbox
-                v-for="type in combinedTypeUniques"
-                v-bind:key="type.id"
-                v-model="selectedTypes"
-                :native-value="type"
-                outlined
-                >{{ type }} ({{
-                  filteredData.filter(el => el.combinedType.includes(type))
-                    .length
-                }})
-              </b-checkbox>
-              </b-field>
-            <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
-              <places-table
-                v-on:selected="setSelectedLocation"
-                v-on:place-updated="setData(+new Date())"
-                :selected-location="selectedLocation"
-                title=""
-                sortBy="properties.current_popularity"
-                :data="
-                  getTableData({
-                    data: filteredDataInBounds,
-                    filterProperty: 'types',
-                    filterValue: 'point_of_interest',
-                    sortBy: 'current_popularity',
-                    numberOfRows: 9999
-                  })
-                "
-                v-if="
-                  getTableData({
-                    data: filteredDataInBounds,
-                    filterProperty: 'types',
-                    filterValue: 'point_of_interest',
-                    sortBy: 'current_popularity',
-                    numberOfRows: 9999
-                  }).length > 0
-                "
-              />
-            </b-tab-item>
-            <b-tab-item label="Hotspots ⚠️">
-              <group-table
-                v-if="groupsData.length > 0"
-                :data="groupsData"
-                title=""
-                v-on:selected="setSelectedLocation"
-                :selected-location="selectedLocation"
-              />
-            </b-tab-item>
-          </b-tabs>
-          <p>
-          <ul>
-            <li>
+  <div class="home" v-if="render">
+    <div class="columns">
+      <div class="column is-half is-narrow is-gapless selection-pane">
+        <p v-if="errorCount > 24">
+          The places API seems to be down. Please
+          <a @click="reloadPage">reload the page</a> to try again.
+        </p>
+        <p>
+          Data rond
+          <b-dropdown aria-role="list">
+            <a slot="trigger" slot-scope="{ active }"> {{ prettyDate }} </a
+            ><b-dropdown-item custom inline>
+              <b-datetimepicker
+                v-model="datetimePicker"
+                inline
+                :focused-date="new Date()"
+                :datepicker="{
+                  firstDayOfWeek: 1,
+                  dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za']
+                }"
+                :max-datetime="new Date()"
+                :min-datetime="new Date('2020-04-12')"
+              ></b-datetimepicker></b-dropdown-item
+          ></b-dropdown>
+          &nbsp;<b-button
+            @click="setData(timestamp - 3600000, 'left')"
+            size="is-small"
+            icon-right="chevron-left"
+            :loading="loading"
+          ></b-button
+          ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+          <b-button
+            v-if="
+              Math.floor(timestamp / 1100) !==
+                Math.floor(initialTimestamp / 1100)
+            "
+            @click="setData(timestamp + 3600000, 'right')"
+            size="is-small"
+            icon-right="chevron-right"
+            :loading="loading"
+          ></b-button
+          ><span id="weather" v-if="weatherResponse"
+            >&nbsp;<img
+              :src="
+                `https://www.weatherbit.io/static/img/icons/${
+                  weatherResponse.data[0].weather.icon
+                }.png`
+              "
+              width="20"
+            />
+            {{ Math.round(weatherResponse.data[0].temp) }} °C</span
+          >
+        </p>
+        <b-tabs v-model="activeTab" size="is-medium" :animated="false">
+          <b-field
+            grouped
+            group-multiline
+            class="checkbox-field"
+            v-if="selectedTypes"
+          >
+            <b-checkbox
+              v-for="type in combinedTypeUniques"
+              v-bind:key="type.id"
+              v-model="selectedTypes"
+              :native-value="type"
+              outlined
+              >{{ type }} ({{
+                filteredData.filter(el => el.combinedType.includes(type))
+                  .length
+              }})
+            </b-checkbox>
+          </b-field>
+          <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
+            <places-table
+              v-on:selected="setSelectedLocation"
+              v-on:place-updated="setData(+new Date())"
+              :selected-location="selectedLocation"
+              title=""
+              sortBy="properties.current_popularity"
+              :data="
+                getTableData({
+                  data: filteredDataInBounds,
+                  filterProperty: 'types',
+                  filterValue: 'point_of_interest',
+                  sortBy: 'current_popularity',
+                  numberOfRows: 9999
+                })
+              "
+              v-if="
+                getTableData({
+                  data: filteredDataInBounds,
+                  filterProperty: 'types',
+                  filterValue: 'point_of_interest',
+                  sortBy: 'current_popularity',
+                  numberOfRows: 9999
+                }).length > 0
+              "
+            />
+          </b-tab-item>
+          <b-tab-item label="Hotspots ⚠️">
+            <group-table
+              v-if="groupsData.length > 0"
+              :data="groupsData"
+              title=""
+              v-on:selected="setSelectedLocation"
+              :selected-location="selectedLocation"
+            />
+          </b-tab-item>
+        </b-tabs>
+        <ul class="menu">
+          <li>
+            <a
+              @click="
+                initialTimestamp = +new Date();
+                setData(+new Date());
+              "
+              >Nieuwste data</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+              target="_blank"
+              >Over deze kaart <b-icon icon="open-in-new" size="is-small"
+            /></a>
+          </li>
+          <li>
+            <b-collapse
+              :open="false"
+              position="is-top"
+              aria-id="contentIdForA11y1"
+            >
               <a
-                @click="
-                  initialTimestamp = +new Date();
-                  setData(+new Date());
-                "
-                >Nieuwste data</a
+                slot="trigger"
+                slot-scope="props"
+                aria-controls="contentIdForA11y1"
               >
-            </li>
-            <li>
-              <a
-                href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
-                target="_blank"
-                >Over deze kaart <b-icon icon="open-in-new" size="is-small"
-              /></a>
-            </li>
-            <li>
-              <b-collapse
-                :open="false"
-                position="is-top"
-                aria-id="contentIdForA11y1"
-              >
-                <a
-                  slot="trigger"
-                  slot-scope="props"
-                  aria-controls="contentIdForA11y1"
-                >
-                  Locatie toevoegen
-                  <b-icon
-                    size="is-small"
-                    :icon="!props.open ? 'chevron-down' : 'chevron-up'"
-                  ></b-icon>
-                </a>
-                <div class="callout">
-                  <p
-                    v-html="
-                      addPlaceResponse === 'Error'
-                        ? 'Dit is geen geldige place ID'
-                        : addPlaceResponse
-                    "
-                  ></p>
-                  <p>
-                    <b-input placeholder="Place ID" v-model="addPlaceInput">
-                    </b-input>
-                  </p>
-                  <p>
-                    <button
-                      class="button is-primary"
-                      @click="addPlace(addPlaceInput)"
-                    >
-                      Voeg toe
-                    </button>
-                  </p>
-                </div>
-              </b-collapse>
-            </li>
-            <li><a href="https://github.com/jurb/popular-places" target="_blank">Github repo</a></li>
-            <li><a @click="logOut">Log uit</a></li>
-          </ul>
-          </p>
-        </div>
-        <div class="column">
-          <places-map
-            v-on:data-in-bounds="setDataInBounds"
-            :data="filteredData"
-            :selected-location="selectedLocation"
-          />
-      </div></div>
-        </div>
+                Locatie toevoegen
+                <b-icon
+                  size="is-small"
+                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                ></b-icon>
+              </a>
+              <div class="callout">
+                <p
+                  v-html="
+                    addPlaceResponse === 'Error'
+                      ? 'Dit is geen geldige place ID'
+                      : addPlaceResponse
+                  "
+                ></p>
+                <p>
+                  <b-input placeholder="Place ID" v-model="addPlaceInput">
+                  </b-input>
+                </p>
+                <p>
+                  <button
+                    class="button is-primary"
+                    @click="addPlace(addPlaceInput)"
+                  >
+                    Voeg toe
+                  </button>
+                </p>
+              </div>
+            </b-collapse>
+          </li>
+          <li>
+            <a href="https://github.com/jurb/popular-places" target="_blank"
+              >Github repo</a
+            >
+          </li>
+          <li><a @click="logOut">Log uit</a></li>
+        </ul>
       </div>
+      <div class="column">
+        <places-map
+          v-on:data-in-bounds="setDataInBounds"
+          :data="filteredData"
+          :selected-location="selectedLocation"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -219,7 +241,7 @@ export default {
       addPlaceInput: null,
       addPlaceResponse:
         'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.',
-        weatherResponse: null
+      weatherResponse: null
     };
   },
   components: {
@@ -257,17 +279,21 @@ export default {
           that.dataInBounds = that.data = data['features'];
           that.timestamp = timestamp;
           that.date = new Date(timestamp);
-          // load unique types in selectedTypes filter array on first load
-          // !that.render ? (that.selectedTypes = that.combinedTypeUniques) : '';
           that.render = true;
           that.loading = false;
           that.errorCount = 0;
         })
-                .then(function(data) {
-                        d3.json(
-        `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date.toISOString().slice(0,10)}%3A${that.prettyHour-1}&end_date=${that.date.toISOString().slice(0,10)}%3A${that.prettyHour}&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API}
-`      ).then(function(data) {that.weatherResponse = data})
-
+        .then(function(data) {
+          d3.json(
+            `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date
+              .toISOString()
+              .slice(0, 10)}%3A${that.prettyHour -
+              1}&end_date=${that.date.toISOString().slice(0, 10)}%3A${
+              that.prettyHour
+            }&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API}`
+          ).then(function(data) {
+            that.weatherResponse = data;
+          });
         })
         .catch(function(error) {
           ++that.errorCount;
@@ -346,7 +372,7 @@ export default {
         ...data.flatMap(el => ({ [el.type]: el.combinedType }))
       );
       // select all types on mount
-      that.selectedTypes = [...new Set(data.map(el => el.combinedType))]
+      that.selectedTypes = [...new Set(data.map(el => el.combinedType))];
     });
     this.setData();
   },
@@ -423,10 +449,6 @@ export default {
             : null,
           id: el.places.map(el => el.id)
         }));
-
-      // return Array.from(
-      //   group(this.data.filter(d => d.group.length > 0), el => el.group)
-      // ).map(el => ({ group: el[0], places: el[1] }));
     }
   }
 };
@@ -454,6 +476,12 @@ p {
   margin: 1em !important;
   font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
 }
+.menu {
+  font-family: Avenir LT W01\ 85 Heavy, arial, sans-serif;
+  font-size: 1.25em !important;
+  margin-left: 1rem;
+}
+
 h2 {
   font-size: 1.3em !important;
   margin-top: 1em !important;
@@ -486,7 +514,7 @@ h2 {
   padding-top: 0.5rem;
 }
 .checkbox-field {
-  margin: 1rem 0 .25rem 1rem !important;
+  margin: 1rem 0 0.25rem 1rem !important;
 }
 .b-tabs .tab-content {
   padding: 0rem;
