@@ -73,14 +73,13 @@ export default {
   },
   computed: {
     dataMax() {
-      return max([...this.dayData, this.currentMeasurement.measurement], d => {
-        return d;
-      });
+      return max(
+        [...this.dayData, this.currentMeasurement.measurement],
+        d => d
+      );
     },
     dataMin() {
-      return min(this.dayData, d => {
-        return d;
-      });
+      return min(this.dayData, d => d);
     },
     xScale() {
       return scaleBand()
@@ -91,6 +90,7 @@ export default {
     yScale() {
       return scaleLinear()
         .rangeRound([this.svgHeight - 25, 0])
+        // TODO: use better heuristic than min/max for y scale graphs
         .domain([this.dataMin > 0 ? 0 : this.dataMin, this.dataMax]);
     },
     svgHeight() {
