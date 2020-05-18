@@ -26,9 +26,11 @@
           <tspan v-if="ticks.includes(index)">{{ index }}</tspan>
         </text>
         <text x=10 :y="yScale(50) + 3" fill="lightgrey">50</text>
-        <line x1="20" :x2="this.svgWidth" :y1="yScale(50)" :y2="yScale(50)" stroke="lightgrey" stroke-dasharray="1" />
-        <text x=10 :y="yScale(100) + 3" fill="lightgrey">100</text>
-        <line x1="20" :x2="this.svgWidth" :y1="yScale(100)" :y2="yScale(100)" stroke="lightgrey" stroke-dasharray="1" />
+        <line x1="25" :x2="this.svgWidth" :y1="yScale(50)" :y2="yScale(50)" stroke="lightgrey" stroke-dasharray="1" />
+        <text v-if="dataMax > 105" x=10 :y="yScale(100) + 3" fill="lightgrey">100</text>
+        <line v-if="dataMax > 105" x1="25" :x2="this.svgWidth" :y1="yScale(100)" :y2="yScale(100)" stroke="lightgrey" stroke-dasharray="1" />
+        <text v-if="dataMax > 205" x=10 :y="yScale(200) + 3" fill="lightgrey">200</text>
+        <line v-if="dataMax > 205" x1="25" :x2="this.svgWidth" :y1="yScale(200)" :y2="yScale(200)" stroke="lightgrey" stroke-dasharray="1" />
         <rect
           class="bar-current"
           rx="3"
