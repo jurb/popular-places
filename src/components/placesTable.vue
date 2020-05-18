@@ -76,6 +76,7 @@
         <place-details
           v-on:place-updated="$emit('place-updated')"
           :id="props.row.id"
+          :timestamp="timestamp"
         />
       </template>
     </b-table>
@@ -85,7 +86,7 @@
 <script>
 import placeDetails from '@/components/placeDetails.vue';
 export default {
-  props: ['data', 'title', 'selectedLocation', 'sortBy'],
+  props: ['data', 'title', 'selectedLocation', 'sortBy', 'timestamp'],
   components: { placeDetails },
   data() {
     return {

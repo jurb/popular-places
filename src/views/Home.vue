@@ -77,6 +77,7 @@
               v-on:place-updated="setData(+new Date())"
               :selected-location="selectedLocation"
               title=""
+              :timestamp="timestamp"
               sortBy="properties.current_popularity"
               :data="
                 getTableData({

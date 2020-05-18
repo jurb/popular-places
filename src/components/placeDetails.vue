@@ -1,7 +1,7 @@
 <template>
   <div v-if="data">
     <div>
-      Meest recente meting: {{ currentMeasurement.prettyDate }},
+      Meting: {{ currentMeasurement.prettyDate }},
       {{ currentMeasurement.prettyHour }}:{{ currentMeasurement.prettyMinute }}.
     </div>
     <history-chart
@@ -57,7 +57,9 @@ export default {
   methods: {
     getPlaceData: function(id) {
       const that = this;
-      d3.json(`https://covid19.api.commondatafactory.nl/place/${id}`, {
+      d3.json(`https://covid19.api.commondatafactory.nl/place/${id}?timestamp=${Math.floor(
+          this.timestamp / 1000
+        )}`, {
         headers: new Headers({
           Authorization: `Basic ${btoa(
             `${process.env.VUE_APP_PLACES_API_USER}:${
@@ -90,6 +92,7 @@ export default {
     currentMeasurement: function() {
       const timestamp = () => d3.max(this.data['measurements'], d => d[0]);
       const date = () => new Date(timestamp() * 1000);
+      // const date = () => new Date(this.timestamp);
       return this.data
         ? {
             date: date(),
