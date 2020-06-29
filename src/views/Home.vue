@@ -258,7 +258,7 @@ export default {
       addPlaceInput: null,
       addPlaceResponse:
         'Kijk op <a href="https://maps.google.com" target="blank">Google Maps</a> of een plek een live meting heeft (roze balkje in de grafiek), en zoek <a href="https://developers.google.com/places/place-id", target="_blank">hier</a> de bijbehorende Place ID op.',
-      weatherResponse: null
+      weatherResponse: {}
     };
   },
   components: {
@@ -301,22 +301,20 @@ export default {
           that.errorCount = 0;
         })
         .then(function(data) {
-          // d3.json(
-          //   `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date
-          //     .toISOString()
-          //     .slice(0, 10)}%3A${that.prettyHour -
-          //     1}&end_date=${that.date.toISOString().slice(0, 10)}%3A${
-          //     that.prettyHour
-          //   }&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API})`
-          console.log(that.timestamp);
           d3.json(
             `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=52.3667&lon=4.8945&dt=${Math.floor(
               timestamp / 1000
-            )}&appid=f6b8b2f586a02caed6fa9ec97ed48689&&units=metric&lang=nl`
-          ).then(function(data) {
-            console.log(data);
-            that.weatherResponse = data;
-          });
+            )}&appid=${
+              process.env.VUE_APP_OPENWEATHERMAP_API
+            }&units=metric&lang=nl`
+          )
+            .then(function(data) {
+              that.weatherResponse = data;
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.weatherResponse.current = null;
+            });
         })
         .catch(function(error) {
           ++that.errorCount;
