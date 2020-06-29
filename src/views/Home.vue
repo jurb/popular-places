@@ -2,56 +2,72 @@
   <div class="home" v-if="render">
     <div class="columns">
       <div class="column is-half is-narrow is-gapless selection-pane">
-        <p v-if="errorCount > 24">
-          The places API seems to be down. Please
-          <a @click="reloadPage">reload the page</a> to try again.
-        </p>
-        <p>
-          Data rond
-          <b-dropdown aria-role="list">
-            <a slot="trigger" slot-scope="{ active }"> {{ prettyDate }} </a
-            ><b-dropdown-item custom inline>
-              <b-datetimepicker
-                v-model="datetimePicker"
-                inline
-                :focused-date="new Date()"
-                :datepicker="{
-                  firstDayOfWeek: 1,
-                  dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za']
-                }"
-                :max-datetime="new Date()"
-                :min-datetime="new Date('2020-04-12')"
-              ></b-datetimepicker></b-dropdown-item
-          ></b-dropdown>
-          &nbsp;<b-button
-            @click="setData(timestamp - 3600000, 'left')"
-            size="is-small"
-            icon-right="chevron-left"
-            :loading="loading"
-          ></b-button
-          ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-          <b-button
-            v-if="
-              Math.floor(timestamp / 1100) !==
-                Math.floor(initialTimestamp / 1100)
-            "
-            @click="setData(timestamp + 3600000, 'right')"
-            size="is-small"
-            icon-right="chevron-right"
-            :loading="loading"
-          ></b-button
-          ><span id="weather" v-if="weatherResponse"
-            >&nbsp;<img
-              :src="
-                `https://www.weatherbit.io/static/img/icons/${
-                  weatherResponse.data[0].weather.icon
-                }.png`
-              "
-              width="20"
-            />
-            {{ Math.round(weatherResponse.data[0].temp) }} °C</span
-          >
-        </p>
+        <div class="level is-mobile">
+          <div class="level-left">
+            <div class="level-item">
+              <p v-if="errorCount > 24">
+                The places API seems to be down. Please
+                <a @click="reloadPage">reload the page</a> to try again.
+              </p>
+              <p class="top-bar">
+                Data rond
+                <b-dropdown aria-role="list">
+                  <a slot="trigger" slot-scope="{ active }">
+                    {{ prettyDate }} </a
+                  ><b-dropdown-item custom inline>
+                    <b-datetimepicker
+                      v-model="datetimePicker"
+                      inline
+                      :focused-date="new Date()"
+                      :datepicker="{
+                        firstDayOfWeek: 1,
+                        dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za']
+                      }"
+                      :max-datetime="new Date()"
+                      :min-datetime="new Date('2020-04-12')"
+                    ></b-datetimepicker></b-dropdown-item
+                ></b-dropdown>
+                &nbsp;<b-button
+                  @click="setData(timestamp - 3600000, 'left')"
+                  size="is-small"
+                  icon-right="chevron-left"
+                  :loading="loading"
+                ></b-button
+                ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+                <b-button
+                  v-if="
+                    Math.floor(timestamp / 1100) !==
+                      Math.floor(initialTimestamp / 1100)
+                  "
+                  @click="setData(timestamp + 3600000, 'right')"
+                  size="is-small"
+                  icon-right="chevron-right"
+                  :loading="loading"
+                ></b-button>
+              </p>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <p>
+                <span id="weather" v-if="weatherResponse.current"
+                  >&nbsp;<img
+                    class="weather-block"
+                    :src="
+                      `https://openweathermap.org/img/wn/${
+                        weatherResponse.current.weather[0].icon
+                      }@2x.png`
+                    "
+                    width="50"
+                  />
+                  <span style="vertical-align: -0.6rem">
+                    {{ Math.round(weatherResponse.current.temp) }} °C</span
+                  ></span
+                >
+              </p>
+            </div>
+          </div>
+        </div>
         <b-tabs v-model="activeTab" size="is-medium" :animated="false">
           <b-field
             grouped
@@ -285,14 +301,20 @@ export default {
           that.errorCount = 0;
         })
         .then(function(data) {
+          // d3.json(
+          //   `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date
+          //     .toISOString()
+          //     .slice(0, 10)}%3A${that.prettyHour -
+          //     1}&end_date=${that.date.toISOString().slice(0, 10)}%3A${
+          //     that.prettyHour
+          //   }&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API})`
+          console.log(that.timestamp);
           d3.json(
-            `https://api.weatherbit.io/v2.0/history/hourly?city_id=2759794&start_date=${that.date
-              .toISOString()
-              .slice(0, 10)}%3A${that.prettyHour -
-              1}&end_date=${that.date.toISOString().slice(0, 10)}%3A${
-              that.prettyHour
-            }&lang=nl&tz=local&key=${process.env.VUE_APP_WEATHERBIT_API}`
+            `https://api.openweathermap.org/data/2.5/onecall/timemachine?lat=52.3667&lon=4.8945&dt=${Math.floor(
+              timestamp / 1000
+            )}&appid=f6b8b2f586a02caed6fa9ec97ed48689&&units=metric&lang=nl`
           ).then(function(data) {
+            console.log(data);
             that.weatherResponse = data;
           });
         })
@@ -519,5 +541,12 @@ h2 {
 }
 .b-tabs .tab-content {
   padding: 0rem;
+}
+.top-bar {
+  vertical-align: text-top;
+}
+.weather-block {
+  /* background-color: gray; */
+  filter: invert(10%);
 }
 </style>
