@@ -183,6 +183,35 @@
             </b-collapse>
           </li>
           <li>
+            <b-collapse
+              :open="false"
+              position="is-top"
+              aria-id="contentIdForA11y1"
+            >
+              <a
+                slot="trigger"
+                slot-scope="props"
+                aria-controls="contentIdForA11y1"
+              >
+                Verborgen locaties beheren
+                <b-icon
+                  size="is-small"
+                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                ></b-icon>
+              </a>
+              <div class="callout content">
+                <ul v-if="ignored.ignored">
+                  <li v-for="place in ignored.ignored" v-bind:key="place">
+                    {{ place }} -
+                    <a @click="unIgnorePlace(place)">laat weer zien</a>
+                  </li>
+                </ul>
+                <p></p>
+              </div>
+            </b-collapse>
+          </li>
+
+          <li>
             <a href="https://github.com/jurb/popular-places" target="_blank"
               >Github repo</a
             >
@@ -223,6 +252,7 @@ export default {
       selectedTypes: [],
       selectedCombinedTypes: [],
       selectedLocation: {},
+      ignored: {},
       initialLoad: true,
       errorCount: 0,
       groups: [],
@@ -316,6 +346,27 @@ export default {
               that.weatherResponse.current = null;
             });
         })
+        .then(function(data) {
+          d3.json(`https://covid19.api.commondatafactory.nl/ignored`, {
+            headers: new Headers({
+              Authorization: `Basic ${btoa(
+                `${process.env.VUE_APP_PLACES_API_USER}:${
+                  process.env.VUE_APP_PLACES_API_PASS
+                }`
+              )}`
+            })
+          })
+            .then(function(data) {
+              that.ignored = data;
+              console.log(
+                that.ignored.ignored.includes('ChIJczsNKFDixUcR88K1TmwrEMw')
+              );
+              console.log(that.ignored);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
         .catch(function(error) {
           ++that.errorCount;
           if (that.errorCount > 24) {
@@ -381,6 +432,24 @@ export default {
         .catch(function(error) {
           that.addPlaceResponse = 'Error';
         });
+    },
+    unIgnorePlace: function(id) {
+      const that = this;
+      d3.json(
+        `https://covid19.api.commondatafactory.nl/ignore_place/${id}?ignore=false`,
+        {
+          method: 'POST',
+          headers: new Headers({
+            Authorization: `Basic ${btoa(
+              `${process.env.VUE_APP_PLACES_API_USER}:${
+                process.env.VUE_APP_PLACES_API_PASS
+              }`
+            )}`
+          })
+        }
+      ).then(function(data) {
+        that.setData(+new Date());
+      });
     }
   },
   mounted: function() {

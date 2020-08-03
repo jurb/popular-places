@@ -10,7 +10,8 @@
       title="chart title"
     />
     <div>
-      <a @click="refreshPlaceData(id)">Ververs data voor deze locatie</a>
+      <a @click="refreshPlaceData(id)">Ververs data</a> |
+      <a @click="ignorePlace(id)">Verberg</a>
     </div>
   </div>
 </template>
@@ -57,17 +58,20 @@ export default {
   methods: {
     getPlaceData: function(id) {
       const that = this;
-      d3.json(`https://covid19.api.commondatafactory.nl/place/${id}?timestamp=${Math.floor(
+      d3.json(
+        `https://covid19.api.commondatafactory.nl/place/${id}?timestamp=${Math.floor(
           this.timestamp / 1000
-        )}`, {
-        headers: new Headers({
-          Authorization: `Basic ${btoa(
-            `${process.env.VUE_APP_PLACES_API_USER}:${
-              process.env.VUE_APP_PLACES_API_PASS
-            }`
-          )}`
-        })
-      }).then(function(data) {
+        )}`,
+        {
+          headers: new Headers({
+            Authorization: `Basic ${btoa(
+              `${process.env.VUE_APP_PLACES_API_USER}:${
+                process.env.VUE_APP_PLACES_API_PASS
+              }`
+            )}`
+          })
+        }
+      ).then(function(data) {
         return (that.data = data);
       });
     },
@@ -83,6 +87,21 @@ export default {
         })
       }).then(function(data) {
         that.getPlaceData(id);
+        that.$emit('place-updated');
+      });
+    },
+    ignorePlace: function(id) {
+      const that = this;
+      d3.json(`https://covid19.api.commondatafactory.nl/ignore_place/${id}`, {
+        method: 'POST',
+        headers: new Headers({
+          Authorization: `Basic ${btoa(
+            `${process.env.VUE_APP_PLACES_API_USER}:${
+              process.env.VUE_APP_PLACES_API_PASS
+            }`
+          )}`
+        })
+      }).then(function(data) {
         that.$emit('place-updated');
       });
     }
