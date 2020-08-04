@@ -58,12 +58,12 @@
           {{ props.row.properties.avg_p }}
         </b-table-column>
         <b-table-column
-          field="diff_current_average"
+          field="properties.diff_current_average"
           label="Verschil"
           sortable
           width="40"
         >
-          {{ props.row.diff_current_average }}
+          {{ props.row.properties.diff_current_average }}
         </b-table-column>
         <b-table-column field="combinedType" label="Categorie" width="40">
           {{ props.row.combinedType.filter(el => el).join(', ') }}

@@ -26,16 +26,16 @@
         v-for="point in data"
         v-bind:key="point.id"
         :lat-lng="point.geometry.coordinates.slice().reverse()"
-        :radius="popularity2radius(point.properties.current_popularity)"
+        :radius="popularity2radius(point.properties[scaleRadio])"
         :color="
           (Array.isArray(selectedLocation.id)
             ? selectedLocation.id
             : [selectedLocation.id]
           ).includes(point.id)
             ? 'blue'
-            : popularity2color(point.properties.current_popularity)
+            : popularity2color(point.properties[scaleRadio])
         "
-        :fillColor="popularity2color(point.properties.current_popularity)"
+        :fillColor="popularity2color(point.properties[scaleRadio])"
         :fillOpacity="0.8"
         :opacity="0.8"
       >
@@ -46,6 +46,7 @@
 
           Huidige pop. score: {{ point.properties.current_popularity }} <br />
           Normale pop. score: {{ point.properties.avg_p }} <br />
+          Verschil: {{ point.properties.diff_current_average }}<br />
           Data gemeten op:
           {{
             `${new Date(point.properties.scraped_at * 1000).getDate()} ${
@@ -73,6 +74,26 @@
         ></l-circle
       >
     </l-map>
+    <div class="content">
+      <p>
+        Map kleuren op <br />
+
+        <b-radio
+          v-model="scaleRadio"
+          name="scale"
+          native-value="current_popularity"
+        >
+          Huidige score
+        </b-radio>
+        <b-radio
+          v-model="scaleRadio"
+          name="scale"
+          native-value="diff_current_average"
+        >
+          Verschil huidige score en normale score
+        </b-radio>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -105,6 +126,7 @@ export default {
       popupInstance: null,
       veiligheidsregio: veiligheidsregio,
       gebieden: gebieden,
+      scaleRadio: 'current_popularity',
       months: [
         'jan',
         'feb',

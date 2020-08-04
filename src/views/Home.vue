@@ -68,6 +68,7 @@
             </div>
           </div>
         </div>
+
         <b-tabs v-model="activeTab" size="is-medium" :animated="false">
           <b-field
             grouped
@@ -324,7 +325,14 @@ export default {
         }
       )
         .then(function(data) {
-          that.dataInBounds = that.data = data['features'];
+          that.dataInBounds = that.data = data['features'].map(el => ({
+            ...el,
+            properties: {
+              ...el.properties,
+              diff_current_average:
+                el.properties.current_popularity - el.properties.avg_p
+            }
+          }));
           that.timestamp = timestamp;
           that.date = new Date(timestamp);
           that.render = true;
@@ -396,8 +404,6 @@ export default {
       return data
         .map(el => ({
           ...el,
-          diff_current_average:
-            el.properties.current_popularity - el.properties.avg_p,
           combinedType: [
             ...new Set(el.properties.types.map(el => this.combinedTypes[el]))
           ]
