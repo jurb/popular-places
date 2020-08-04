@@ -173,7 +173,6 @@ export default {
           )
       );
       this.$emit('data-in-bounds', dataInBounds);
-      console.log(this.popularity2color(423));
     }
   },
   computed: {

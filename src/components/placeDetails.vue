@@ -2,7 +2,11 @@
   <div v-if="data">
     <div>
       Meting: {{ currentMeasurement.prettyDate }},
-      {{ currentMeasurement.prettyHour }}:{{ currentMeasurement.prettyMinute }}.
+      {{ currentMeasurement.prettyHour }}:{{
+        currentMeasurement.prettyMinute
+      }}.<br />
+      Adres: {{ data.address.slice(0, -32) }}<br />
+      ID: {{ data.id }}
     </div>
     <history-chart
       :day-data="dayData"

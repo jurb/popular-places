@@ -207,6 +207,7 @@
                   </li>
                 </ul>
                 <p></p>
+                <!-- <p>Sortering is van nieuw naar oud.</p> -->
               </div>
             </b-collapse>
           </li>
@@ -358,10 +359,6 @@ export default {
           })
             .then(function(data) {
               that.ignored = data;
-              console.log(
-                that.ignored.ignored.includes('ChIJczsNKFDixUcR88K1TmwrEMw')
-              );
-              console.log(that.ignored);
             })
             .catch(function(error) {
               console.log(error);
