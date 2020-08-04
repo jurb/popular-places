@@ -5,7 +5,7 @@
       {{ currentMeasurement.prettyHour }}:{{
         currentMeasurement.prettyMinute
       }}.<br />
-      Adres: {{ data.address.slice(0, -32) }}<br />
+      Adres: {{ data.address.slice(0, -13) }}<br />
       ID: {{ data.id }}
     </div>
     <history-chart
