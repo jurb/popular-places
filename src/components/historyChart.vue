@@ -1,17 +1,54 @@
 <template>
-  <div id="container" class="svg-container" align="center">
+  <div id="container" class="svg-container">
     <!-- <h1>{{ title }}</h1> -->
     <svg :width="svgWidth" :height="svgHeight">
       <g class="axis">
-        <text x=10 :y="yScale(50) + 3" fill="lightgrey">50</text>
-        <line x1="25" :x2="this.svgWidth" :y1="yScale(50)" :y2="yScale(50)" stroke="lightgrey" stroke-dasharray="1" />
-        <text v-if="dataMax > 105" x=10 :y="yScale(100) + 3" fill="lightgrey">100</text>
-        <line v-if="dataMax > 105" x1="25" :x2="this.svgWidth" :y1="yScale(100)" :y2="yScale(100)" stroke="lightgrey" stroke-dasharray="1" />
-        <text v-if="dataMax > 155" x=10 :y="yScale(150) + 3" fill="lightgrey">150</text>
-        <line v-if="dataMax > 155" x1="25" :x2="this.svgWidth" :y1="yScale(150)" :y2="yScale(150)" stroke="lightgrey" stroke-dasharray="1" />
-        <text v-if="dataMax > 205" x=10 :y="yScale(200) + 3" fill="lightgrey">200</text>
-        <line v-if="dataMax > 205" x1="25" :x2="this.svgWidth" :y1="yScale(200)" :y2="yScale(200)" stroke="lightgrey" stroke-dasharray="1" />
-          </g>
+        <text x="10" :y="yScale(50) + 3" fill="lightgrey">50</text>
+        <line
+          x1="25"
+          :x2="this.svgWidth"
+          :y1="yScale(50)"
+          :y2="yScale(50)"
+          stroke="lightgrey"
+          stroke-dasharray="1"
+        />
+        <text v-if="dataMax > 105" x="10" :y="yScale(100) + 3" fill="lightgrey">
+          100
+        </text>
+        <line
+          v-if="dataMax > 105"
+          x1="25"
+          :x2="this.svgWidth"
+          :y1="yScale(100)"
+          :y2="yScale(100)"
+          stroke="lightgrey"
+          stroke-dasharray="1"
+        />
+        <text v-if="dataMax > 155" x="10" :y="yScale(150) + 3" fill="lightgrey">
+          150
+        </text>
+        <line
+          v-if="dataMax > 155"
+          x1="25"
+          :x2="this.svgWidth"
+          :y1="yScale(150)"
+          :y2="yScale(150)"
+          stroke="lightgrey"
+          stroke-dasharray="1"
+        />
+        <text v-if="dataMax > 205" x="10" :y="yScale(200) + 3" fill="lightgrey">
+          200
+        </text>
+        <line
+          v-if="dataMax > 205"
+          x1="25"
+          :x2="this.svgWidth"
+          :y1="yScale(200)"
+          :y2="yScale(200)"
+          stroke="lightgrey"
+          stroke-dasharray="1"
+        />
+      </g>
       <g>
         <rect
           v-for="(item, index) in dayData"
@@ -98,10 +135,12 @@ export default {
         .domain(this.dayData.map((d, index) => index));
     },
     yScale() {
-      return scaleLinear()
-        .rangeRound([this.svgHeight - 25, 0])
-        // TODO: use better heuristic than min/max for y scale graphs
-        .domain([0, this.dataMax < 60 ? 60 : this.dataMax]);
+      return (
+        scaleLinear()
+          .rangeRound([this.svgHeight - 25, 0])
+          // TODO: use better heuristic than min/max for y scale graphs
+          .domain([0, this.dataMax < 60 ? 60 : this.dataMax])
+      );
     },
     svgHeight() {
       // return this.svgWidth / 1.61803398875; // golden ratio

@@ -1,21 +1,25 @@
 <template>
   <div v-if="data">
-    <div>
-      Meting: {{ currentMeasurement.prettyDate }},
-      {{ currentMeasurement.prettyHour }}:{{
-        currentMeasurement.prettyMinute
-      }}.<br />
-      Adres: {{ data.address.slice(0, -13) }}<br />
-      ID: {{ data.id }}
+    <div class="is-size-7 ">
+      {{ currentMeasurement.prettyDate }},
+      {{ currentMeasurement.prettyHour }}:{{ currentMeasurement.prettyMinute
+      }}<br />
+      {{ data.address.slice(0, -13) }}<br />
     </div>
+    <p></p>
     <history-chart
       :day-data="dayData"
       :current-measurement="currentMeasurement"
       title="chart title"
     />
+    <p></p>
     <div>
-      <a @click="refreshPlaceData(id)">Ververs data</a> |
-      <a @click="ignorePlace(id)">Verberg</a>
+      <p>
+        <a @click="refreshPlaceData(id)">Ververs data</a> |
+        <a @click="ignorePlace(id)">Verberg</a> <br /><span class="is-size-7">{{
+          data.id
+        }}</span>
+      </p>
     </div>
   </div>
 </template>
@@ -147,4 +151,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+p {
+  font-size: 1rem !important;
+  margin: 1rem 0 0 0 !important;
+}
+</style>
