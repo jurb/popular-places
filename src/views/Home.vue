@@ -207,7 +207,9 @@
                     <a @click="unIgnorePlace(place)">laat weer zien</a>
                   </li>
                 </ul>
-                <p></p>
+                <p class="is-size-7">
+                  Naam en adres van verborgen locaties volgt binnenkort.
+                </p>
                 <!-- <p>Sortering is van nieuw naar oud.</p> -->
               </div>
             </b-collapse>
