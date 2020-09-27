@@ -1,234 +1,247 @@
 <template>
-  <div class="home" v-if="render">
+  <div>
     <div class="columns">
       <div class="column is-half is-narrow is-gapless selection-pane">
-        <div class="level is-mobile">
-          <div class="level-left">
-            <div class="level-item">
-              <p v-if="errorCount > 24">
-                The places API seems to be down. Please
-                <a @click="reloadPage">reload the page</a> to try again.
-              </p>
-              <p class="top-bar">
-                Data rond
-                <b-dropdown aria-role="list">
-                  <a slot="trigger" slot-scope="{ active }">
-                    {{ prettyDate }} </a
-                  ><b-dropdown-item custom inline>
-                    <b-datetimepicker
-                      v-model="datetimePicker"
-                      inline
-                      :focused-date="new Date()"
-                      :datepicker="{
-                        firstDayOfWeek: 1,
-                        dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za']
-                      }"
-                      :max-datetime="new Date()"
-                      :min-datetime="new Date('2020-04-12')"
-                    ></b-datetimepicker></b-dropdown-item
-                ></b-dropdown>
-                &nbsp;<b-button
-                  @click="setData(timestamp - 3600000, 'left')"
-                  size="is-small"
-                  icon-right="chevron-left"
-                  :loading="loading"
-                ></b-button
-                ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
-                <b-button
-                  v-if="
-                    Math.floor(timestamp / 1100) !==
-                      Math.floor(initialTimestamp / 1100)
-                  "
-                  @click="setData(timestamp + 3600000, 'right')"
-                  size="is-small"
-                  icon-right="chevron-right"
-                  :loading="loading"
-                ></b-button>
-              </p>
-            </div>
-          </div>
-          <div class="level-right">
-            <div class="level-item">
-              <p>
-                <span id="weather" v-if="weatherResponse.current"
-                  >&nbsp;<img
-                    class="weather-block"
-                    :src="
-                      `https://openweathermap.org/img/wn/${
-                        weatherResponse.current.weather[0].icon
-                      }@2x.png`
-                    "
-                    width="50"
-                  />
-                  <span style="vertical-align: -0.6rem">
-                    {{ Math.round(weatherResponse.current.temp) }} °C</span
-                  ></span
-                >
-              </p>
-            </div>
-          </div>
+        <div v-if="!render && loading">Data ophalen van de API...</div>
+        <div v-if="!render && loading && errorCount > 24">
+          De popular places API lijkt down, er komt niks terug van
+          <a href="https://covid19.api.commondatafactory.nl/popularplaces"
+            >https://covid19.api.commondatafactory.nl/popularplaces</a
+          >. Neem contact op met de beheerder.
         </div>
-
-        <b-tabs v-model="activeTab" size="is-medium" :animated="false">
-          <b-field
-            grouped
-            group-multiline
-            class="checkbox-field"
-            v-if="selectedTypes"
-          >
-            <b-checkbox
-              v-for="type in combinedTypeUniques"
-              v-bind:key="type.id"
-              v-model="selectedTypes"
-              :native-value="type"
-              outlined
-              >{{ type }} ({{
-                filteredData.filter(el => el.combinedType.includes(type))
-                  .length
-              }})
-            </b-checkbox>
-          </b-field>
-          <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
-            <places-table
-              v-on:selected="setSelectedLocation"
-              v-on:place-updated="setData(+new Date())"
-              :selected-location="selectedLocation"
-              title=""
-              :timestamp="timestamp"
-              sortBy="properties.current_popularity"
-              :data="
-                getTableData({
-                  data: filteredDataInBounds,
-                  filterProperty: 'types',
-                  filterValue: 'point_of_interest',
-                  sortBy: 'current_popularity',
-                  numberOfRows: 9999
-                })
-              "
-              v-if="
-                getTableData({
-                  data: filteredDataInBounds,
-                  filterProperty: 'types',
-                  filterValue: 'point_of_interest',
-                  sortBy: 'current_popularity',
-                  numberOfRows: 9999
-                }).length > 0
-              "
-            />
-          </b-tab-item>
-          <b-tab-item label="Hotspots ⚠️">
-            <group-table
-              v-if="groupsData.length > 0"
-              :data="groupsData"
-              title=""
-              v-on:selected="setSelectedLocation"
-              :selected-location="selectedLocation"
-            />
-          </b-tab-item>
-        </b-tabs>
-        <ul class="menu">
-          <li>
-            <a
-              @click="
-                initialTimestamp = +new Date();
-                setData(+new Date());
-              "
-              >Nieuwste data</a
-            >
-          </li>
-          <li>
-            <a
-              href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
-              target="_blank"
-              >Over deze kaart <b-icon icon="open-in-new" size="is-small"
-            /></a>
-          </li>
-          <li>
-            <b-collapse
-              :open="false"
-              position="is-top"
-              aria-id="contentIdForA11y1"
-            >
-              <a
-                slot="trigger"
-                slot-scope="props"
-                aria-controls="contentIdForA11y1"
-              >
-                Locatie toevoegen
-                <b-icon
-                  size="is-small"
-                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
-                ></b-icon>
-              </a>
-              <div class="callout">
-                <p
-                  v-html="
-                    addPlaceResponse === 'Error'
-                      ? 'Dit is geen geldige place ID'
-                      : addPlaceResponse
-                  "
-                ></p>
-                <p>
-                  <b-input placeholder="Place ID" v-model="addPlaceInput">
-                  </b-input>
-                </p>
-                <p>
-                  <button
-                    class="button is-primary"
-                    @click="addPlace(addPlaceInput)"
-                  >
-                    Voeg toe
-                  </button>
-                </p>
-              </div>
-            </b-collapse>
-          </li>
-          <li>
-            <b-collapse
-              :open="false"
-              position="is-top"
-              aria-id="contentIdForA11y1"
-            >
-              <a
-                slot="trigger"
-                slot-scope="props"
-                aria-controls="contentIdForA11y1"
-              >
-                Verborgen locaties beheren
-                <b-icon
-                  size="is-small"
-                  :icon="!props.open ? 'chevron-down' : 'chevron-up'"
-                ></b-icon>
-              </a>
-              <div class="callout content">
-                <ul v-if="ignored.ignored">
-                  <li v-for="place in ignored.ignored" v-bind:key="place">
-                    {{ place }} -
-                    <a @click="unIgnorePlace(place)">laat weer zien</a>
-                  </li>
-                </ul>
-                <p class="is-size-7">
-                  Naam en adres van verborgen locaties volgt binnenkort.
-                </p>
-                <!-- <p>Sortering is van nieuw naar oud.</p> -->
-              </div>
-            </b-collapse>
-          </li>
-
-          <li>
-            <a href="https://github.com/jurb/popular-places" target="_blank"
-              >Github repo</a
-            >
-          </li>
-          <li><a @click="logOut">Log uit</a></li>
-        </ul>
       </div>
-      <div class="column">
-        <places-map
-          v-on:data-in-bounds="setDataInBounds"
-          :data="filteredData"
-          :selected-location="selectedLocation"
-        />
+    </div>
+    <div class="home" v-if="render">
+      <div class="columns">
+        <div class="column is-half is-narrow is-gapless selection-pane">
+          <div class="level is-mobile">
+            <div class="level-left">
+              <div class="level-item">
+                <p v-if="errorCount > 24">
+                  The places API seems to be down. Please
+                  <a @click="reloadPage">reload the page</a> to try again.
+                </p>
+                <p class="top-bar">
+                  Data rond
+                  <b-dropdown aria-role="list">
+                    <a slot="trigger" slot-scope="{ active }">
+                      {{ prettyDate }} </a
+                    ><b-dropdown-item custom inline>
+                      <b-datetimepicker
+                        v-model="datetimePicker"
+                        inline
+                        :focused-date="new Date()"
+                        :datepicker="{
+                          firstDayOfWeek: 1,
+                          dayNames: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za']
+                        }"
+                        :max-datetime="new Date()"
+                        :min-datetime="new Date('2020-04-12')"
+                      ></b-datetimepicker></b-dropdown-item
+                  ></b-dropdown>
+                  &nbsp;<b-button
+                    @click="setData(timestamp - 3600000, 'left')"
+                    size="is-small"
+                    icon-right="chevron-left"
+                    :loading="loading"
+                  ></b-button
+                  ><span> {{ prettyHour }}:{{ prettyMinute }} </span>
+                  <b-button
+                    v-if="
+                      Math.floor(timestamp / 1100) !==
+                        Math.floor(initialTimestamp / 1100)
+                    "
+                    @click="setData(timestamp + 3600000, 'right')"
+                    size="is-small"
+                    icon-right="chevron-right"
+                    :loading="loading"
+                  ></b-button>
+                </p>
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <p>
+                  <span id="weather" v-if="weatherResponse.current"
+                    >&nbsp;<img
+                      class="weather-block"
+                      :src="
+                        `https://openweathermap.org/img/wn/${
+                          weatherResponse.current.weather[0].icon
+                        }@2x.png`
+                      "
+                      width="50"
+                    />
+                    <span style="vertical-align: -0.6rem">
+                      {{ Math.round(weatherResponse.current.temp) }} °C</span
+                    ></span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <b-tabs v-model="activeTab" size="is-medium" :animated="false">
+            <b-field
+              grouped
+              group-multiline
+              class="checkbox-field"
+              v-if="selectedTypes"
+            >
+              <b-checkbox
+                v-for="type in combinedTypeUniques"
+                v-bind:key="type.id"
+                v-model="selectedTypes"
+                :native-value="type"
+                outlined
+                >{{ type }} ({{
+                  filteredData.filter(el => el.combinedType.includes(type))
+                    .length
+                }})
+              </b-checkbox>
+            </b-field>
+            <b-tab-item :label="`Alle plekken (${filteredData.length} items)`">
+              <places-table
+                v-on:selected="setSelectedLocation"
+                v-on:place-updated="setData(+new Date())"
+                :selected-location="selectedLocation"
+                title=""
+                :timestamp="timestamp"
+                sortBy="properties.current_popularity"
+                :data="
+                  getTableData({
+                    data: filteredDataInBounds,
+                    filterProperty: 'types',
+                    filterValue: 'point_of_interest',
+                    sortBy: 'current_popularity',
+                    numberOfRows: 9999
+                  })
+                "
+                v-if="
+                  getTableData({
+                    data: filteredDataInBounds,
+                    filterProperty: 'types',
+                    filterValue: 'point_of_interest',
+                    sortBy: 'current_popularity',
+                    numberOfRows: 9999
+                  }).length > 0
+                "
+              />
+            </b-tab-item>
+            <b-tab-item label="Hotspots ⚠️">
+              <group-table
+                v-if="groupsData.length > 0"
+                :data="groupsData"
+                title=""
+                v-on:selected="setSelectedLocation"
+                :selected-location="selectedLocation"
+              />
+            </b-tab-item>
+          </b-tabs>
+          <ul class="menu">
+            <li>
+              <a
+                @click="
+                  initialTimestamp = +new Date();
+                  setData(+new Date());
+                "
+                >Nieuwste data</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://docs.google.com/document/d/1lUI3qSzNs3U2FufbgKe4jFW5Ww2baPGrAUcZXdBKFqw/edit?usp=sharing"
+                target="_blank"
+                >Over deze kaart <b-icon icon="open-in-new" size="is-small"
+              /></a>
+            </li>
+            <li>
+              <b-collapse
+                :open="false"
+                position="is-top"
+                aria-id="contentIdForA11y1"
+              >
+                <a
+                  slot="trigger"
+                  slot-scope="props"
+                  aria-controls="contentIdForA11y1"
+                >
+                  Locatie toevoegen
+                  <b-icon
+                    size="is-small"
+                    :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                  ></b-icon>
+                </a>
+                <div class="callout">
+                  <p
+                    v-html="
+                      addPlaceResponse === 'Error'
+                        ? 'Dit is geen geldige place ID'
+                        : addPlaceResponse
+                    "
+                  ></p>
+                  <p>
+                    <b-input placeholder="Place ID" v-model="addPlaceInput">
+                    </b-input>
+                  </p>
+                  <p>
+                    <button
+                      class="button is-primary"
+                      @click="addPlace(addPlaceInput)"
+                    >
+                      Voeg toe
+                    </button>
+                  </p>
+                </div>
+              </b-collapse>
+            </li>
+            <li>
+              <b-collapse
+                :open="false"
+                position="is-top"
+                aria-id="contentIdForA11y1"
+              >
+                <a
+                  slot="trigger"
+                  slot-scope="props"
+                  aria-controls="contentIdForA11y1"
+                >
+                  Verborgen locaties beheren
+                  <b-icon
+                    size="is-small"
+                    :icon="!props.open ? 'chevron-down' : 'chevron-up'"
+                  ></b-icon>
+                </a>
+                <div class="callout content">
+                  <ul v-if="ignored.ignored">
+                    <li v-for="place in ignored.ignored" v-bind:key="place">
+                      {{ place }} -
+                      <a @click="unIgnorePlace(place)">laat weer zien</a>
+                    </li>
+                  </ul>
+                  <p class="is-size-7">
+                    Naam en adres van verborgen locaties volgt binnenkort.
+                  </p>
+                  <!-- <p>Sortering is van nieuw naar oud.</p> -->
+                </div>
+              </b-collapse>
+            </li>
+
+            <li>
+              <a href="https://github.com/jurb/popular-places" target="_blank"
+                >Github repo</a
+              >
+            </li>
+            <li><a @click="logOut">Log uit</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <places-map
+            v-on:data-in-bounds="setDataInBounds"
+            :data="filteredData"
+            :selected-location="selectedLocation"
+          />
+        </div>
       </div>
     </div>
   </div>
