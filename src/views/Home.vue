@@ -7,7 +7,8 @@
           De popular places API lijkt down, er komt niks terug van
           <a href="https://covid19.api.commondatafactory.nl/popularplaces"
             >https://covid19.api.commondatafactory.nl/popularplaces</a
-          >. Neem contact op met de beheerder.
+          >. Vragen? Kom even langs bij het #druktedata kanaal op de
+          <a href="https://codefor.nl">Code for NL</a> Slack
         </div>
       </div>
     </div>
